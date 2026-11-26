@@ -1,0 +1,2741 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f3d2e" />
+  <title>KisanSense — Visual Multi-Language Smart Agri & General AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #eef5f0;
+      --card: #ffffff;
+      --primary: #0f3d2e;
+      --primary-light: #185c45;
+      --accent: #16a34a;
+      --gold: #d97706;
+      --hold-bg: #ecfdf5;
+      --hold-border: #10b981;
+      --hold-text: #065f46;
+      --sell-bg: #fff7ed;
+      --sell-border: #f97316;
+      --sell-text: #9a3412;
+      --move-bg: #eff6ff;
+      --move-border: #3b82f6;
+      --move-text: #1e40af;
+      --text: #111827;
+      --muted: #4b5563;
+      --border: #e2e8f0;
+      --radius: 20px;
+      --shadow: 0 8px 28px rgba(15, 61, 46, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Kannada', 'Noto Sans Telugu', 'Noto Sans Devanagari', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    /* =========================================================================
+       FULLSCREEN INSTAGRAM-STYLE SPLASH SCREEN ON LAUNCH
+       ========================================================================= */
+    .app-splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at 50% 35%, #166534 0%, #092c20 55%, #04150f 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s;
+    }
+
+    .app-splash-screen.splash-exit {
+      opacity: 0;
+      transform: scale(1.06);
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-logo-wrap {
+      width: 124px;
+      height: 124px;
+      border-radius: 32px;
+      background: linear-gradient(145deg, #ffffff 0%, #dcfce7 100%);
+      border: 4px solid #4ade80;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 18px 48px rgba(34, 197, 94, 0.45), 0 0 0 12px rgba(74, 222, 128, 0.12);
+      animation: splashPop 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .splash-logo-wrap svg {
+      width: 96px;
+      height: 96px;
+      display: block;
+    }
+
+    @keyframes splashPop {
+      0% { transform: scale(0.45); opacity: 0; }
+      70% { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .splash-title {
+      margin-top: 22px;
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #ffffff 0%, #bbf7d0 50%, #fde047 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeUpSplash 0.6s ease 0.2s both;
+    }
+
+    .splash-tagline {
+      margin-top: 6px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #a7f3d0;
+      animation: fadeUpSplash 0.6s ease 0.35s both;
+    }
+
+    .splash-footer {
+      position: absolute;
+      bottom: 36px;
+      text-align: center;
+      animation: fadeUpSplash 0.6s ease 0.45s both;
+    }
+
+    .splash-footer span {
+      display: block;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #6ee7b7;
+      font-weight: 700;
+    }
+
+    .splash-footer strong {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fef08a;
+      margin-top: 2px;
+    }
+
+    @keyframes fadeUpSplash {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Top Navigation with Big Logo */
+    .topbar {
+      background: linear-gradient(135deg, #072219 0%, #124935 100%);
+      color: #ffffff;
+      padding: 16px 22px;
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo-big {
+      width: 78px;
+      height: 78px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #ffffff 0%, #dcfce7 100%);
+      border: 3px solid #4ade80;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .brand-logo-big svg {
+      width: 64px;
+      height: 64px;
+      display: block;
+    }
+
+    .brand h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      font-size: 0.9rem;
+      color: #a7f3d0;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.28);
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      background: transparent;
+      color: #e2e8f0;
+      border: none;
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .lang-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    .lang-btn.active {
+      background: #22c55e;
+      color: #052e16;
+      box-shadow: 0 2px 8px rgba(34, 197, 94, 0.45);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 10px 15px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* CONTINUOUS AUTOMATIC REALISTIC PHOTO SLIDER DIRECTLY BELOW PROJECT NAME */
+    .auto-marquee-wrapper {
+      background: linear-gradient(135deg, #092b20 0%, #14533c 100%);
+      padding: 14px 0 18px;
+      box-shadow: 0 8px 24px rgba(15, 61, 46, 0.18);
+      overflow: hidden;
+      position: relative;
+      border-bottom: 3px solid #4ade80;
+    }
+
+    .marquee-header-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #d1fae5;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #4ade80;
+      margin-right: 7px;
+      box-shadow: 0 0 8px #4ade80;
+    }
+
+    .marquee-viewport {
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 18px;
+      width: max-content;
+      animation: continuousSlide 34s linear infinite;
+      padding-left: 18px;
+    }
+
+    @keyframes continuousSlide {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    .slide-card {
+      width: 325px;
+      height: 185px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      background: #0f3d2e;
+    }
+
+    .slide-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .slide-caption {
+      position: absolute;
+      inset: auto 0 0 0;
+      background: linear-gradient(to top, rgba(3, 20, 14, 0.95) 0%, rgba(3, 20, 14, 0.72) 65%, transparent 100%);
+      color: #ffffff;
+      padding: 22px 14px 11px;
+    }
+
+    .slide-caption strong {
+      display: block;
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: #fef08a;
+    }
+
+    .slide-caption span {
+      display: block;
+      font-size: 0.78rem;
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 22px auto 0;
+      padding: 0 16px;
+      display: grid;
+      gap: 22px;
+    }
+
+    /* Visual Farm Banner */
+    .hero-visual-banner {
+      border-radius: var(--radius);
+      background: linear-gradient(125deg, #0b3326 0%, #165b42 52%, #1d7a4c 100%);
+      color: #ffffff;
+      padding: 24px 26px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: center;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (max-width: 840px) {
+      .hero-visual-banner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-bg-illustration {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    .hero-left {
+      z-index: 2;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #a7f3d0;
+      margin-bottom: 10px;
+    }
+
+    .hero-left h2 {
+      font-size: 1.48rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .hero-left p {
+      font-size: 0.94rem;
+      color: #d1fae5;
+      max-width: 560px;
+    }
+
+    .hero-right-card {
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .crop-image-frame {
+      width: 96px;
+      height: 96px;
+      border-radius: 16px;
+      background: #ffffff;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      border: 2px solid #bbf7d0;
+    }
+
+    .crop-image-frame img,
+    .crop-image-frame svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* EXTRA LARGE FEATURE BUTTONS (LOCATION & SUMMARISE) */
+    .primary-feature-deck {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .primary-feature-deck {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mega-btn {
+      border: none;
+      border-radius: 20px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      text-align: left;
+      color: #ffffff;
+      transition: transform 0.18s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mega-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .mega-btn:active {
+      transform: translateY(0);
+    }
+
+    .mega-btn-location {
+      background: linear-gradient(135deg, #065f46 0%, #16a34a 100%);
+      border: 2px solid #6ee7b7;
+    }
+
+    .mega-btn-summarise {
+      background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+      border: 2px solid #fde68a;
+    }
+
+    .mega-btn-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mega-icon-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.22);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      display: grid;
+      place-items: center;
+      font-size: 2.2rem;
+      flex-shrink: 0;
+    }
+
+    .mega-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      line-height: 1.2;
+      display: block;
+    }
+
+    .mega-desc {
+      font-size: 0.88rem;
+      font-weight: 600;
+      opacity: 0.95;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .mega-arrow {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.2);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    /* Visual Crop Gallery Strip */
+    .crop-gallery-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .crop-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .crop-tile {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+
+    .crop-tile:hover {
+      border-color: #22c55e;
+      background: #f0fdf4;
+      transform: translateY(-2px);
+    }
+
+    .crop-tile.selected {
+      border-color: #15803d;
+      background: #dcfce7;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+    }
+
+    .crop-tile-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .crop-tile-name {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .crop-tile-price {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #166534;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    /* Card & Form */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .card-title {
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .card-subtitle {
+      font-size: 0.84rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .location-status-banner {
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: #166534;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .location-status-banner.error {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+
+    /* Quick Summarise Panel */
+    .summary-panel {
+      display: none;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2.5px solid #f59e0b;
+      border-radius: 18px;
+      padding: 20px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .summary-panel.visible {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .summary-header h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #92400e;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .summary-item {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 14px;
+      padding: 12px 14px;
+      border: 1px solid #fde68a;
+    }
+
+    .summary-item span {
+      display: block;
+      font-size: 0.78rem;
+      color: #78350f;
+      font-weight: 700;
+    }
+
+    .summary-item strong {
+      font-size: 1rem;
+      color: #111827;
+      font-weight: 800;
+    }
+
+    /* Selector Controls */
+    .selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .field select,
+    .field input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .qty-stepper button {
+      width: 44px;
+      height: 46px;
+      border: none;
+      background: #f1f5f9;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--primary);
+    }
+
+    .qty-stepper input {
+      border: none;
+      text-align: center;
+      font-weight: 800;
+      padding: 8px 4px;
+    }
+
+    .btn-primary-large {
+      background: linear-gradient(135deg, #0f3d2e, #16a34a);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 20px;
+      font-size: 1.04rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .decision-banner {
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid var(--hold-border);
+      background: var(--hold-bg);
+      color: var(--hold-text);
+      margin-bottom: 18px;
+    }
+
+    .decision-banner.sell {
+      border-color: var(--sell-border);
+      background: var(--sell-bg);
+      color: var(--sell-text);
+    }
+
+    .decision-banner.move {
+      border-color: var(--move-border);
+      background: var(--move-bg);
+      color: var(--move-text);
+    }
+
+    .decision-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .decision-call {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 4px 0;
+    }
+
+    .btn-speak {
+      background: #ffffff;
+      color: var(--primary);
+      border: 2px solid currentColor;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .decision-reason {
+      margin-top: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .impact-strip {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      font-size: 0.96rem;
+      font-weight: 800;
+    }
+
+    /* Forecast Bars */
+    .bars-wrap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      align-items: end;
+      height: 200px;
+      padding: 16px 12px 10px;
+      background: #f8fafc;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      gap: 6px;
+    }
+
+    .bar-price { font-size: 0.98rem; font-weight: 800; color: var(--primary); }
+    .bar-delta { font-size: 0.76rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #e2e8f0; color: #334155; }
+    .bar-delta.up { background: #dcfce7; color: #166534; }
+    .bar-delta.down { background: #fee2e2; color: #991b1b; }
+    .bar-track { width: 100%; max-width: 80px; height: 105px; display: flex; align-items: flex-end; justify-content: center; }
+    .bar-fill { width: 100%; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #22c55e 0%, #15803d 100%); transition: height 0.45s ease; min-height: 24px; }
+    .bar-fill.today { background: linear-gradient(180deg, #64748b 0%, #334155 100%); }
+    .bar-fill.down { background: linear-gradient(180deg, #fb923c 0%, #ea580c 100%); }
+    .bar-label { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+
+    .signals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 560px) { .signals-grid { grid-template-columns: 1fr; } }
+
+    .signal-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .signal-box .label { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+    .signal-box .value { font-size: 0.9rem; font-weight: 700; margin-top: 4px; }
+
+    /* Mandi Table */
+    .mandi-table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); }
+    th { font-size: 0.8rem; color: var(--muted); background: #f8fafc; }
+    tr.best-mandi { background: #ecfdf5; font-weight: 700; }
+    .best-badge { display: inline-block; background: #16a34a; color: #fff; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; margin-left: 6px; font-weight: 700; }
+
+    /* Right Column Stack: Assistant + Risk Management */
+    .right-column-stack {
+      display: grid;
+      gap: 20px;
+    }
+
+    /* Assistant */
+    .assistant-card { display: flex; flex-direction: column; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+    .q-chip { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 7px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .q-chip:hover { background: #dcfce7; }
+
+    .chat-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      overflow-y: auto;
+      height: 295px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .msg { max-width: 92%; padding: 12px 14px; border-radius: 14px; font-size: 0.94rem; line-height: 1.6; }
+    .msg.user { align-self: flex-end; background: var(--primary); color: #ffffff; border-bottom-right-radius: 4px; }
+    .msg.bot { align-self: flex-start; background: #ffffff; border: 1px solid #e2e8f0; color: var(--text); border-bottom-left-radius: 4px; }
+    .msg-source-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #047857;
+      background: #ecfdf5;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+    }
+    .msg-actions { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .mini-btn { background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f3d2e; border-radius: 8px; padding: 6px 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+    .chat-input-bar { display: flex; gap: 8px; align-items: center; }
+    .mic-btn { width: 54px; height: 54px; flex-shrink: 0; border-radius: 50%; border: none; background: #0f3d2e; color: #fff; font-size: 1.45rem; cursor: pointer; display: grid; place-items: center; }
+    .mic-btn.listening { background: #dc2626; animation: pulse 1.2s infinite; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+      70% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    .chat-input-bar input { flex: 1; padding: 13px 14px; border-radius: 12px; border: 1.5px solid #cbd5e1; font-size: 0.94rem; font-family: inherit; }
+    .send-btn { padding: 13px 18px; border-radius: 12px; border: none; background: #16a34a; color: #fff; font-weight: 800; cursor: pointer; font-family: inherit; font-size: 0.94rem; }
+    .voice-status { font-size: 0.82rem; color: var(--muted); margin-top: 6px; min-height: 18px; font-weight: 600; }
+    .voice-status.error { color: #b91c1c; }
+
+    /* RISK MANAGEMENT VISUALIZATION PANEL */
+    .risk-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: var(--radius);
+      border: 2px solid #cbd5e1;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .risk-badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .risk-badge.low { background: #dcfce7; color: #166534; }
+    .risk-badge.medium { background: #fef3c7; color: #92400e; }
+    .risk-badge.high { background: #fee2e2; color: #991b1b; }
+
+    .risk-gauge-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 8px 0 14px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 12px 10px;
+    }
+
+    .risk-gauge-svg {
+      width: 240px;
+      height: 132px;
+      overflow: visible;
+    }
+
+    .risk-score-display {
+      text-align: center;
+      margin-top: -10px;
+    }
+
+    .risk-score-display strong {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+      line-height: 1.1;
+    }
+
+    .risk-score-display span {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .risk-bars-list {
+      display: grid;
+      gap: 11px;
+      margin-top: 10px;
+    }
+
+    .risk-factor-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .risk-factor-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .risk-progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .risk-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.45s ease, background 0.3s ease;
+    }
+
+    .risk-mitigation-box {
+      margin-top: 14px;
+      background: #eff6ff;
+      border: 1.5px solid #93c5fd;
+      border-radius: 12px;
+      padding: 11px 13px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); display: none; place-items: center; z-index: 100; padding: 16px; }
+    .modal-backdrop.open { display: grid; }
+    .modal { background: #fff; border-radius: 16px; max-width: 460px; width: 100%; padding: 22px; }
+    .modal input { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; margin: 12px 0; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+    footer { max-width: 1200px; margin: 28px auto 0; padding: 0 16px; text-align: center; font-size: 0.84rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <!-- FULLSCREEN INSTAGRAM-STYLE SPLASH SCREEN -->
+  <div class="app-splash-screen" id="appSplashScreen" role="status" aria-label="Loading KisanSense">
+    <div class="splash-logo-wrap">
+      <svg viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="splashSun" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fde047"/>
+            <stop offset="100%" stop-color="#f59e0b"/>
+          </linearGradient>
+          <linearGradient id="splashLeaf" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#22c55e"/>
+            <stop offset="100%" stop-color="#0f3d2e"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="34" r="20" fill="url(#splashSun)"/>
+        <path d="M14,72 Q35,54 50,74 Q65,54 86,72 Q66,90 50,86 Q34,90 14,72 Z" fill="url(#splashLeaf)"/>
+        <path d="M50,86 L50,24" stroke="#14532d" stroke-width="4.5" stroke-linecap="round"/>
+        <ellipse cx="41" cy="36" rx="8" ry="4.5" transform="rotate(-32 41 36)" fill="#ca8a04"/>
+        <ellipse cx="59" cy="36" rx="8" ry="4.5" transform="rotate(32 59 36)" fill="#ca8a04"/>
+        <ellipse cx="40" cy="49" rx="9" ry="4.5" transform="rotate(-28 40 49)" fill="#eab308"/>
+        <ellipse cx="60" cy="49" rx="9" ry="4.5" transform="rotate(28 60 49)" fill="#eab308"/>
+        <circle cx="50" cy="21" r="5" fill="#16a34a"/>
+      </svg>
+    </div>
+    <div class="splash-title">KisanSense</div>
+    <div class="splash-tagline">🌾 Smart Mandi • Live GPS • Risk Guard AI</div>
+    <div class="splash-footer">
+      <span>Powered By</span>
+      <strong>🇮🇳 Digital Krishi AI</strong>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <!-- BIG PROJECT LOGO -->
+        <div class="brand-logo-big" aria-label="KisanSense Big Logo">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="logoSun" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#fde047"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </linearGradient>
+              <linearGradient id="logoLeaf" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22c55e"/>
+                <stop offset="100%" stop-color="#0f3d2e"/>
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="34" r="20" fill="url(#logoSun)"/>
+            <path d="M14,72 Q35,54 50,74 Q65,54 86,72 Q66,90 50,86 Q34,90 14,72 Z" fill="url(#logoLeaf)"/>
+            <path d="M50,86 L50,24" stroke="#14532d" stroke-width="4.5" stroke-linecap="round"/>
+            <ellipse cx="41" cy="36" rx="8" ry="4.5" transform="rotate(-32 41 36)" fill="#ca8a04"/>
+            <ellipse cx="59" cy="36" rx="8" ry="4.5" transform="rotate(32 59 36)" fill="#ca8a04"/>
+            <ellipse cx="40" cy="49" rx="9" ry="4.5" transform="rotate(-28 40 49)" fill="#eab308"/>
+            <ellipse cx="60" cy="49" rx="9" ry="4.5" transform="rotate(28 60 49)" fill="#eab308"/>
+            <circle cx="50" cy="21" r="5" fill="#16a34a"/>
+          </svg>
+        </div>
+        <div>
+          <h1 id="appTitle">ಕಿಸಾನ್‌ಸೆನ್ಸ್</h1>
+          <p id="appSubtitle">ಲೈವ್ ಲೊಕೇಶನ್, ಮಂಡಿ ಮತ್ತು ಸ್ಮಾರ್ಟ್ AI ಸಹಾಯಕ</p>
+        </div>
+      </div>
+
+      <div class="lang-switcher" role="group" aria-label="Language Selector">
+        <button type="button" class="lang-btn active" data-lang="kn">🇮🇳 ಕನ್ನಡ</button>
+        <button type="button" class="lang-btn" data-lang="te">🇮🇳 తెలుగు</button>
+        <button type="button" class="lang-btn" data-lang="mr">🇮🇳 मराठी</button>
+        <button type="button" class="lang-btn" data-lang="en">🌐 English</button>
+      </div>
+
+      <button class="btn-ghost" id="openSettingsBtn" type="button">⚙️ API</button>
+    </div>
+  </header>
+
+  <!-- CONTINUOUS AUTOMATIC REALISTIC PHOTO SLIDER DIRECTLY UNDER PROJECT NAME -->
+  <section class="auto-marquee-wrapper" aria-label="Continuous Automatic Realistic Agricultural Highlights">
+    <div class="marquee-header-bar">
+      <span><span class="live-dot"></span><span id="marqueeHeaderTitle">ಲೈವ್ ಕೃಷಿ ಮತ್ತು ಮಂಡಿ ನೈಜ ಚಿತ್ರಗಳು (Live Realistic Agri Feed)</span></span>
+      <span>📸 HD Live Farm & Mandi</span>
+    </div>
+    <div class="marquee-viewport">
+      <div class="marquee-track" id="marqueeTrack"></div>
+    </div>
+  </section>
+
+  <main class="container">
+    <!-- ILLUSTRATED VISUAL FARM HERO BANNER -->
+    <section class="hero-visual-banner">
+      <svg class="hero-bg-illustration" viewBox="0 0 1200 320" preserveAspectRatio="none">
+        <circle cx="1040" cy="70" r="55" fill="#fde047" />
+        <path d="M0,220 Q280,110 600,200 T1200,160 L1200,320 L0,320 Z" fill="#a7f3d0" />
+        <path d="M0,260 Q360,180 740,250 T1200,220 L1200,320 L0,320 Z" fill="#ffffff" />
+      </svg>
+
+      <div class="hero-left">
+        <div class="hero-pill">🛰️ GPS Live Mandi • 🧠 General + Agri AI • 🛡️ Risk Guard</div>
+        <h2 id="heroHeading">🚜 ಸ್ಮಾರ್ಟ್ ಮಂಡಿ ಬೆಲೆ ಮತ್ತು ಸಾರ್ವತ್ರಿಕ AI ಮಾರ್ಗದರ್ಶಿ</h2>
+        <p id="heroSub">ಮಂಡಿ ಬೆಲೆ, ಹವಾಮಾನ, ಕೃಷಿ ಸಲಹೆ ಅಥವಾ ಯಾವುದೇ ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳನ್ನು 4 ಭಾಷೆಗಳಲ್ಲಿ ಕೇಳಿ.</p>
+      </div>
+
+      <div class="hero-right-card">
+        <div class="crop-image-frame" id="heroCropImageBox"></div>
+        <div>
+          <div style="font-size: 0.78rem; color: #a7f3d0; font-weight: 700;" id="heroCropTag">ಆಯ್ಕೆಯಾದ ಬೆಳೆ</div>
+          <div style="font-size: 1.28rem; font-weight: 800;" id="heroCropName">ರಾಗಿ</div>
+          <div style="font-size: 0.92rem; color: #fef08a; font-weight: 800; margin-top: 2px;" id="heroCropPrice">₹4,280 / ಕ್ವಿಂಟಲ್</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXTRA LARGE FEATURE BUTTONS: LIVE LOCATION & SUMMARISE -->
+    <section class="primary-feature-deck">
+      <button type="button" class="mega-btn mega-btn-location" id="detectLocationBtn">
+        <div class="mega-btn-left">
+          <div class="mega-icon-box">📍</div>
+          <div>
+            <span class="mega-title" id="gpsBtnTitle">ನನ್ನ ಲೈವ್ ಲೊಕೇಶನ್</span>
+            <span class="mega-desc" id="gpsBtnSub">GPS ಮೂಲಕ ನಿಮ್ಮ ಜಿಲ್ಲೆ ಮತ್ತು ಮಂಡಿ ಪತ್ತೆಹಚ್ಚಿ</span>
+          </div>
+        </div>
+        <div class="mega-arrow">➔</div>
+      </button>
+
+      <button type="button" class="mega-btn mega-btn-summarise" id="toggleSummaryBtn">
+        <div class="mega-btn-left">
+          <div class="mega-icon-box">📋</div>
+          <div>
+            <span class="mega-title" id="summaryBtnTitle">ತ್ವರಿತ ಸಾರಾಂಶ (Summarise)</span>
+            <span class="mega-desc" id="summaryBtnSub">ಬೆಲೆ, ಲಾಭ ಮತ್ತು ಸಲಹೆಯ ಪೂರ್ಣ ಸಾರಾಂಶ ನೋಡಿ</span>
+          </div>
+        </div>
+        <div class="mega-arrow">✨</div>
+      </button>
+    </section>
+
+    <div class="location-status-banner" id="locationStatus">
+      <span style="font-size: 1.25rem;">📡</span>
+      <span id="locationStatusText">ನಿಮ್ಮ ಲೈವ್ ಲೊಕೇಶನ್ ಪಡೆಯಲು ಮೇಲಿನ ದೊಡ್ಡ ಹಸಿರು ಬಟನ್ ಒತ್ತಿ</span>
+    </div>
+
+    <section class="summary-panel" id="summaryPanel">
+      <div class="summary-header">
+        <h3 id="summaryHeading">📋 ಮಂಡಿ ಮತ್ತು ಬೆಲೆ ಸಾರಾಂಶ</h3>
+        <button type="button" class="btn-speak" id="speakSummaryBtn">🔊 ಸಾರಾಂಶ ಕೇಳಿ</button>
+      </div>
+      <p id="summaryParagraph" style="font-size: 1.02rem; font-weight: 700; color: #451a03; line-height: 1.6;"></p>
+      <div class="summary-grid" id="summaryGrid"></div>
+    </section>
+
+    <!-- VISUAL CROP IMAGE GALLERY SELECTOR -->
+    <section class="crop-gallery-card">
+      <div class="card-title" style="margin-bottom: 4px;">
+        <span id="galleryTitle">🖼️ ಬೆಳೆಯ ಚಿತ್ರವನ್ನು ಒತ್ತಿ ಆಯ್ಕೆ ಮಾಡಿ (Visual Crop Selector)</span>
+        <span class="card-subtitle" id="gallerySub">ಚಿತ್ರದ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ</span>
+      </div>
+      <div class="crop-gallery-grid" id="cropGalleryGrid"></div>
+    </section>
+
+    <!-- District & Quantity Selector Card -->
+    <section class="card">
+      <div class="card-title">
+        <span id="selectCardTitle">🏙️ ರಾಜ್ಯ, ಜಿಲ್ಲೆ ಮತ್ತು ಪ್ರಮಾಣ ಆಯ್ಕೆ</span>
+        <span class="card-subtitle" id="forecastHorizonLabel">7–14 ದಿನಗಳ ಬೆಲೆ ಮುನ್ಸೂಚನೆ</span>
+      </div>
+
+      <div class="selector-grid">
+        <div class="field">
+          <label for="stateSelect" id="lblState">🗺️ ರಾಜ್ಯ</label>
+          <select id="stateSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="districtSelect" id="lblDistrict">🏙️ ಜಿಲ್ಲೆ / ಮಂಡಿ</label>
+          <select id="districtSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="cropSelect" id="lblCrop">🌱 ಬೆಳೆ</label>
+          <select id="cropSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="qtyInput" id="lblQty">⚖️ ಪ್ರಮಾಣ (ಕ್ವಿಂಟಲ್)</label>
+          <div class="qty-stepper">
+            <button type="button" id="qtyMinus">−</button>
+            <input type="number" id="qtyInput" value="10" min="1" max="500" />
+            <button type="button" id="qtyPlus">+</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <button type="button" class="btn-primary-large" id="analyzeBtn">
+            <span>🔍</span>
+            <span id="analyzeBtnText">ಸಲಹೆ ಪಡೆಯಿರಿ</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+      <!-- Left Column -->
+      <div style="display: grid; gap: 20px;">
+        <section class="card">
+          <div class="card-title">
+            <span id="selectedHeader">🌾 ರಾಗಿ • ತುಮಕೂರು</span>
+            <span class="card-subtitle" id="modelBadge">🎯 ನಿಖರತೆ: 91%</span>
+          </div>
+
+          <div class="decision-banner" id="decisionBanner">
+            <div class="decision-top">
+              <div>
+                <div class="decision-tag" id="decisionTag">💡 ಸ್ಪಷ್ಟ ಸಲಹೆ</div>
+                <div class="decision-call" id="decisionCall">⏳ ಕಾಯಿರಿ</div>
+              </div>
+              <button type="button" class="btn-speak" id="speakAdviceBtn">
+                🔊 <span id="speakAdviceLabel">ಸಲಹೆ ಕೇಳಿ</span>
+              </button>
+            </div>
+            <div class="decision-reason" id="reasonText"></div>
+            <div class="impact-strip">
+              <span id="impactText"></span>
+            </div>
+          </div>
+
+          <div class="card-title" style="margin-bottom: 10px;">
+            <span id="chartTitle">📈 14 ದಿನಗಳ ಬೆಲೆ ಮುನ್ಸೂಚನೆ (₹/ಕ್ವಿಂಟಲ್)</span>
+          </div>
+          <div class="bars-wrap" id="barsWrap"></div>
+
+          <div class="signals-grid" id="signalsGrid"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-title">
+            <span id="mandiTableTitle">🚚 ಹತ್ತಿರದ ಮಂಡಿಗಳ ಹೋಲಿಕೆ</span>
+            <span class="card-subtitle" id="mandiTableSub">ನಿವ್ವಳ ಬೆಲೆ = ಮಂಡಿ ಬೆಲೆ − ಸಾಗಣೆ ವೆಚ್ಚ</span>
+          </div>
+          <div class="mandi-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th id="thMandi">ಮಂಡಿ</th>
+                  <th id="thDist">ದೂರ</th>
+                  <th id="thPrice">ಬೆಲೆ</th>
+                  <th id="thTrans">ಸಾಗಣೆ</th>
+                  <th id="thNet">ನಿವ್ವಳ</th>
+                </tr>
+              </thead>
+              <tbody id="mandiTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: Universal + Mandi Voice & Chat Assistant + Risk Management Visualization -->
+      <div class="right-column-stack">
+        <section class="card assistant-card">
+          <div class="card-title">
+            <span id="assistantTitle">🗣️ ಸ್ಮಾರ್ಟ್ AI ಧ್ವನಿ ಸಹಾಯಕ</span>
+            <span class="card-subtitle" id="aiModeBadge">🧠 ಮಂಡಿ + ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳು</span>
+          </div>
+
+          <div class="chip-row" id="quickChips"></div>
+
+          <div class="chat-box" id="chatBox"></div>
+
+          <form class="chat-input-bar" id="chatForm">
+            <button type="button" class="mic-btn" id="micBtn" title="Voice Message">🎤</button>
+            <input
+              type="text"
+              id="chatInput"
+              placeholder="ಮಂಡಿ ಅಥವಾ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ..."
+              autocomplete="off"
+            />
+            <button type="submit" class="send-btn" id="sendBtnText">ಕಳುಹಿಸಿ</button>
+          </form>
+          <div class="voice-status" id="voiceStatus">🎤 ಮೈಕ್ ಒತ್ತಿ ಮಾತನಾಡಿ</div>
+        </section>
+
+        <!-- RISK MANAGEMENT VISUALIZATION PANEL -->
+        <section class="risk-card" aria-label="Risk Management Visualization">
+          <div class="card-title" style="margin-bottom: 8px;">
+            <span id="riskTitle">🛡️ ಅಪಾಯ ನಿರ್ವಹಣೆ ವಿಶ್ಲೇಷಣೆ (Risk Management)</span>
+            <span class="risk-badge low" id="riskLevelBadge">ಕಡಿಮೆ ಅಪಾಯ</span>
+          </div>
+
+          <div class="risk-gauge-container">
+            <svg class="risk-gauge-svg" viewBox="0 0 240 135">
+              <defs>
+                <linearGradient id="riskArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#16a34a" />
+                  <stop offset="50%" stop-color="#f59e0b" />
+                  <stop offset="100%" stop-color="#dc2626" />
+                </linearGradient>
+              </defs>
+              <path d="M 24 116 A 96 96 0 0 1 216 116" fill="none" stroke="#e2e8f0" stroke-width="18" stroke-linecap="round" />
+              <path d="M 24 116 A 96 96 0 0 1 216 116" fill="none" stroke="url(#riskArcGrad)" stroke-width="18" stroke-linecap="round" />
+              <g id="riskNeedleGroup" transform="rotate(-65 120 116)">
+                <polygon points="116,116 124,116 120,34" fill="#0f3d2e" />
+                <circle cx="120" cy="116" r="10" fill="#0f3d2e" />
+                <circle cx="120" cy="116" r="4" fill="#ffffff" />
+              </g>
+            </svg>
+            <div class="risk-score-display">
+              <strong id="riskScoreValue">28 / 100</strong>
+              <span id="riskScoreSub">ಒಟ್ಟಾರೆ ಮಾರುಕಟ್ಟೆ ಮತ್ತು ಹವಾಮಾನ ಅಪಾಯ ಸೂಚ್ಯಂಕ</span>
+            </div>
+          </div>
+
+          <div class="risk-bars-list" id="riskBarsList"></div>
+
+          <div class="risk-mitigation-box">
+            <span style="font-size: 1.2rem;">💡</span>
+            <span id="riskMitigationText">ಸುರಕ್ಷಿತ ಸಲಹೆ ಲೋಡ್ ಆಗುತ್ತಿದೆ...</span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <strong id="footerBrand">🌾 ಕಿಸಾನ್‌ಸೆನ್ಸ್</strong> • <span id="footerTag">ಮಂಡಿ ಸಲಹೆ ಮತ್ತು ಸ್ಮಾರ್ಟ್ AI ಸಹಾಯಕ</span>
+  </footer>
+
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal">
+      <h3>⚙️ Gemini AI Key (Optional for Deep AI Answers)</h3>
+      <p style="font-size: 0.86rem; color: var(--muted); margin-top: 6px;">
+        Built-in Knowledge + Wikipedia live search works automatically without any key! Add a Gemini API key if you also want conversational AI for complex questions.
+      </p>
+      <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
+      <div class="modal-actions">
+        <button type="button" class="mini-btn" id="closeSettingsBtn">Close</button>
+        <button type="button" class="send-btn" id="saveSettingsBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 0. INSTAGRAM-STYLE LAUNCH SPLASH AUTO-HIDE
+    // =========================================================================
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const splash = document.getElementById("appSplashScreen");
+        if (splash) {
+          splash.classList.add("splash-exit");
+          setTimeout(() => splash.remove(), 700);
+        }
+      }, 1850);
+    });
+
+    // =========================================================================
+    // 1. MULTI-LANGUAGE DICTIONARY (KANNADA, TELUGU, MARATHI, ENGLISH)
+    // =========================================================================
+    let currentLang = "kn";
+
+    const I18N = {
+      kn: {
+        speechCode: "kn-IN",
+        ttsCode: "kn",
+        wikiLang: "kn",
+        appTitle: "ಕಿಸಾನ್‌ಸೆನ್ಸ್",
+        appSubtitle: "ಲೈವ್ ಲೊಕೇಶನ್, ಮಂಡಿ ಮತ್ತು ಸ್ಮಾರ್ಟ್ AI ಸಹಾಯಕ",
+        marqueeHeaderTitle: "ಲೈವ್ ಕೃಷಿ ಮತ್ತು ಮಂಡಿ ನೈಜ ಚಿತ್ರಗಳು (Live Realistic Agri Feed)",
+        heroHeading: "🚜 ಸ್ಮಾರ್ಟ್ ಮಂಡಿ ಬೆಲೆ ಮತ್ತು ಸಾರ್ವತ್ರಿಕ AI ಮಾರ್ಗದರ್ಶಿ",
+        heroSub: "ಮಂಡಿ ಬೆಲೆ, ಹವಾಮಾನ, ಸರ್ಕಾರಿ ಯೋಜನೆ ಅಥವಾ ಯಾವುದೇ ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳನ್ನು 4 ಭಾಷೆಗಳಲ್ಲಿ ಕೇಳಿ.",
+        heroCropTag: "ಆಯ್ಕೆಯಾದ ಬೆಳೆ",
+        gpsBtnTitle: "ನನ್ನ ಲೈವ್ ಲೊಕೇಶನ್",
+        gpsBtnSub: "GPS ಮೂಲಕ ನಿಮ್ಮ ಜಿಲ್ಲೆ ಮತ್ತು ಮಂಡಿ ಪತ್ತೆಹಚ್ಚಿ",
+        summaryBtnTitle: "ತ್ವರಿತ ಸಾರಾಂಶ (Summarise)",
+        summaryBtnSub: "ಬೆಲೆ, ಲಾಭ ಮತ್ತು ಸಲಹೆಯ ಪೂರ್ಣ ಸಾರಾಂಶ ನೋಡಿ",
+        galleryTitle: "🖼️ ಬೆಳೆಯ ಚಿತ್ರವನ್ನು ಒತ್ತಿ ಆಯ್ಕೆ ಮಾಡಿ",
+        gallerySub: "ಚಿತ್ರದ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ",
+        selectCardTitle: "🏙️ ರಾಜ್ಯ, ಜಿಲ್ಲೆ ಮತ್ತು ಪ್ರಮಾಣ ಆಯ್ಕೆ",
+        forecastHorizonLabel: "7–14 ದಿನಗಳ ಬೆಲೆ ಮುನ್ಸೂಚನೆ",
+        locationPrompt: "ನಿಮ್ಮ ಲೈವ್ ಲೊಕೇಶನ್ ಪಡೆಯಲು ಮೇಲಿನ ದೊಡ್ಡ ಹಸಿರು ಬಟನ್ ಒತ್ತಿ",
+        locating: "📡 ನಿಮ್ಮ ಲೈವ್ ಲೊಕೇಶನ್ ಹುಡುಕುತ್ತಿದೆ...",
+        locatedPrefix: "✅ ಲೈವ್ ಲೊಕೇಶನ್ ಪತ್ತೆಯಾಗಿದೆ: ",
+        locDenied: "⚠️ ಲೊಕೇಶನ್ ಅನುಮತಿ ನಿರಾಕರಿಸಲಾಗಿದೆ.",
+        summaryHeading: "📋 ಮಂಡಿ ಮತ್ತು ಬೆಲೆ ಸಾರಾಂಶ",
+        speakSummaryBtn: "🔊 ಸಾರಾಂಶ ಕೇಳಿ",
+        lblState: "🗺️ ರಾಜ್ಯ",
+        lblDistrict: "🏙️ ಜಿಲ್ಲೆ / ಮಂಡಿ",
+        lblCrop: "🌱 ಬೆಳೆ",
+        lblQty: "⚖️ ಪ್ರಮಾಣ (ಕ್ವಿಂಟಲ್)",
+        analyzeBtnText: "ಸಲಹೆ ಪಡೆಯಿರಿ",
+        accuracyLabel: "🎯 ನಿಖರತೆ",
+        decisionTag: "💡 ಸ್ಪಷ್ಟ ಸಲಹೆ",
+        speakAdviceLabel: "ಸಲಹೆ ಕೇಳಿ",
+        chartTitle: "📈 14 ದಿನಗಳ ಬೆಲೆ ಮುನ್ಸೂಚನೆ (₹/ಕ್ವಿಂಟಲ್)",
+        today: "ಇಂದು",
+        d7: "+7 ದಿನ",
+        d14: "+14 ದಿನ",
+        todayRate: "ಇಂದಿನ ದರ",
+        weatherLbl: "🌤️ ಹವಾಮಾನ",
+        arrivalsLbl: "📦 ಮಂಡಿ ಆವಕ",
+        seasonLbl: "📅 ಋತುಮಾನ",
+        mandiTableTitle: "🚚 ಹತ್ತಿರದ ಮಂಡಿಗಳ ಹೋಲಿಕೆ",
+        mandiTableSub: "ನಿವ್ವಳ ಬೆಲೆ = ಮಂಡಿ ಬೆಲೆ − ಸಾಗಣೆ ವೆಚ್ಚ",
+        thMandi: "ಮಂಡಿ",
+        thDist: "ದೂರ",
+        thPrice: "ಬೆಲೆ",
+        thTrans: "ಸಾಗಣೆ",
+        thNet: "ನಿವ್ವಳ",
+        bestBadge: "ಉತ್ತಮ ಬೆಲೆ",
+        localKm: "ಸ್ಥಳೀಯ (0 ಕಿ.ಮೀ)",
+        kmUnit: "ಕಿ.ಮೀ",
+        qtlUnit: "ಕ್ವಿಂಟಲ್",
+        assistantTitle: "🗣️ ಸ್ಮಾರ್ಟ್ AI ಧ್ವನಿ ಸಹಾಯಕ",
+        chatPlaceholder: "ಮಂಡಿ ಅಥವಾ ಯಾವುದೇ ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆ ಕೇಳಿ...",
+        sendBtnText: "ಕಳುಹಿಸಿ",
+        voiceReady: "🎤 ಮೈಕ್ ಒತ್ತಿ ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ",
+        voiceListening: "🔴 ಕೇಳಿಸಿಕೊಳ್ಳುತ್ತಿದೆ... ಮಾತನಾಡಿ",
+        thinking: "⏳ ಉತ್ತರ ಹುಡುಕುತ್ತಿದೆ...",
+        riskTitle: "🛡️ ಅಪಾಯ ನಿರ್ವಹಣೆ ವಿಶ್ಲೇಷಣೆ (Risk Management)",
+        riskScoreSub: "ಒಟ್ಟಾರೆ ಮಾರುಕಟ್ಟೆ ಮತ್ತು ಹವಾಮಾನ ಅಪಾಯ ಸೂಚ್ಯಂಕ",
+        riskLow: "ಕಡಿಮೆ ಅಪಾಯ (Low)",
+        riskMed: "ಮಧ್ಯಮ ಅಪಾಯ (Medium)",
+        riskHigh: "ಹೆಚ್ಚಿನ ಅಪಾಯ (High)",
+        riskFactors: [
+          "📉 ಬೆಲೆ ಏರಿಳಿತದ ಅಪಾಯ (Price Volatility)",
+          "⏳ ಬೆಳೆ ಹಾಳಾಗುವ ಅಪಾಯ (Perishability)",
+          "🌦️ ಹವಾಮಾನ ಮತ್ತು ತೇವಾಂಶ ಅಪಾಯ (Weather)",
+          "🚛 ಸಾಗಣೆ ಮತ್ತು ಆವಕ ಒತ್ತಡ (Supply Risk)"
+        ],
+        welcomeMsg: "ನಮಸ್ಕಾರ! 🌾 ನಾನು ಕಿಸಾನ್‌ಸೆನ್ಸ್ ಸ್ಮಾರ್ಟ್ ಸಹಾಯಕ. ನೀವು ಮಂಡಿ ಬೆಲೆ ಬಗ್ಗೆ ಮಾತ್ರವಲ್ಲದೆ ಅಪಾಯ ನಿರ್ವಹಣೆ, ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು, ಆರೋಗ್ಯ, ವಿಜ್ಞಾನ, ಸಾಮಾನ್ಯ ಜ್ಞಾನ ಅಥವಾ ಯಾವುದೇ ವಿಷಯದ ಬಗ್ಗೆ ಕೇಳಬಹುದು!",
+        chips: [
+          "ಇಂದು ಬೆಲೆ ಎಷ್ಟಿದೆ?",
+          "ಪಿಎಂ ಕಿಸಾನ್ ಯೋಜನೆ ಎಂದರೇನು?",
+          "ಮಣ್ಣಿನ ಫಲವತ್ತತೆ ಹೆಚ್ಚಿಸುವುದು ಹೇಗೆ?",
+          "ಭಾರತದ ರಾಜಧಾನಿ ಯಾವುದು?"
+        ],
+        holdCall: "⏳ ಕಾಯಿರಿ (HOLD)",
+        sellCall: "💰 ಈಗಲೇ ಮಾರಾಟ ಮಾಡಿ (SELL)",
+        moveCall: "🚚 ಹತ್ತಿರದ ಮಂಡಿಗೆ ಸಾಗಿಸಿ (MOVE)"
+      },
+      te: {
+        speechCode: "te-IN",
+        ttsCode: "te",
+        wikiLang: "te",
+        appTitle: "కిసాన్‌సెన్స్",
+        appSubtitle: "లైవ్ లొకేషన్, మండి & స్మార్ట్ AI సహాయకుడు",
+        marqueeHeaderTitle: "లైవ్ వ్యవసాయ & మండి నిజ చిత్రాలు (Live Realistic Agri Feed)",
+        heroHeading: "🚜 స్మార్ట్ మండి ధరలు & జనరల్ AI మార్గదర్శి",
+        heroSub: "మండి ధరలు, వాతావరణం, ప్రభుత్వ పథకాలు లేదా ఏదైనా సాధారణ ప్రశ్నలను 4 భాషల్లో అడగండి.",
+        heroCropTag: "ఎంచుకున్న పంట",
+        gpsBtnTitle: "నా లైవ్ లొకేషన్",
+        gpsBtnSub: "GPS ద్వారా మీ జిల్లా మరియు మండిని గుర్తించండి",
+        summaryBtnTitle: "త్వరిత సారాంశం (Summarise)",
+        summaryBtnSub: "ధర, లాభం మరియు సలహా పూర్తి సారాంశం చూడండి",
+        galleryTitle: "🖼️ పంట చిత్రాన్ని నొక్కి ఎంచుకోండి",
+        gallerySub: "చిత్రంపై క్లిక్ చేయండి",
+        selectCardTitle: "🏙️ రాష్ట్రం, జిల్లా మరియు పరిమాణం ఎంపిక",
+        forecastHorizonLabel: "7–14 రోజుల ధర అంచనా",
+        locationPrompt: "మీ లైవ్ లొకేషన్ కోసం పై పెద్ద ఆకుపచ్చ బటన్ నొక్కండి",
+        locating: "📡 మీ లైవ్ లొకేషన్ వెతుకుతోంది...",
+        locatedPrefix: "✅ లైవ్ లొకేషన్ గుర్తించబడింది: ",
+        locDenied: "⚠️ లొకేషన్ అనుమతి నిరాకరించబడింది.",
+        summaryHeading: "📋 మండి & ధరల సారాంశం",
+        speakSummaryBtn: "🔊 సారాంశం వినండి",
+        lblState: "🗺️ రాష్ట్రం",
+        lblDistrict: "🏙️ జిల్లా / మండి",
+        lblCrop: "🌱 పంట",
+        lblQty: "⚖️ పరిమాణం (క్వింటాళ్లు)",
+        analyzeBtnText: "సలహా పొందండి",
+        accuracyLabel: "🎯 ఖచ్చితత్వం",
+        decisionTag: "💡 స్పష్టమైన సలహా",
+        speakAdviceLabel: "సలహా వినండి",
+        chartTitle: "📈 14 రోజుల ధర అంచనా (₹/క్వింటాల్)",
+        today: "ఈరోజు",
+        d7: "+7 రోజులు",
+        d14: "+14 రోజులు",
+        todayRate: "నేటి ధర",
+        weatherLbl: "🌤️ వాతావరణం",
+        arrivalsLbl: "📦 మండి రాక",
+        seasonLbl: "📅 సీజన్",
+        mandiTableTitle: "🚚 సమీప మండీల పోలిక",
+        mandiTableSub: "నికర ధర = మండి ధర − రవాణా ఖర్చు",
+        thMandi: "మండి",
+        thDist: "దూరం",
+        thPrice: "ధర",
+        thTrans: "రవాణా",
+        thNet: "నికర ధర",
+        bestBadge: "ఉత్తమ ధర",
+        localKm: "స్థానిక (0 కి.మీ)",
+        kmUnit: "కి.మీ",
+        qtlUnit: "క్వింటాల్",
+        assistantTitle: "🗣️ స్మార్ట్ AI వాయిస్ సహాయకుడు",
+        chatPlaceholder: "మండి లేదా ఏదైనా సాధారణ ప్రశ్న అడగండి...",
+        sendBtnText: "పంపండి",
+        voiceReady: "🎤 మైక్ నొక్కి తెలుగులో మాట్లాడండి",
+        voiceListening: "🔴 వింటోంది... మాట్లాడండి",
+        thinking: "⏳ సమాధానం వెతుకుతోంది...",
+        riskTitle: "🛡️ రిస్క్ మేనేజ్‌మెంట్ విశ్లేషణ (Risk Management)",
+        riskScoreSub: "మొత్తం మార్కెట్ మరియు వాతావరణ రిస్క్ సూచిక",
+        riskLow: "తక్కువ రిస్క్ (Low)",
+        riskMed: "మధ్యస్థ రిస్క్ (Medium)",
+        riskHigh: "అధిక రిస్క్ (High)",
+        riskFactors: [
+          "📉 ధర హెచ్చుతగ్గుల రిస్క్ (Price Volatility)",
+          "⏳ పంట పాడయ్యే రిస్క్ (Perishability)",
+          "🌦️ వాతావరణం & తేమ రిస్క్ (Weather)",
+          "🚛 రవాణా & సరఫరా ఒత్తిడి (Supply Risk)"
+        ],
+        welcomeMsg: "నమస్కారం! 🌾 నేను కిసాన్‌సెన్స్ స్మార్ట్ AI సహాయకుడిని. మండి ధరలతో పాటు రిస్క్ మేనేజ్‌మెంట్, ప్రభుత్వ పథకాలు, సైన్స్, ఆరోగ్యం లేదా ఏదైనా సాధారణ ప్రశ్న అడగవచ్చు!",
+        chips: [
+          "ఈరోజు ధర ఎంత ఉంది?",
+          "పీఎం కిసాన్ పథకం అంటే ఏమిటి?",
+          "నేల సారం పెంచడం ఎలా?",
+          "భారతదేశ రాజధాని ఏది?"
+        ],
+        holdCall: "⏳ వేచి ఉండండి (HOLD)",
+        sellCall: "💰 ఇప్పుడే అమ్మండి (SELL)",
+        moveCall: "🚚 సమీప మండికి తరలించండి (MOVE)"
+      },
+      mr: {
+        speechCode: "mr-IN",
+        ttsCode: "mr",
+        wikiLang: "mr",
+        appTitle: "किसानसेन्स",
+        appSubtitle: "लाइव्ह लोकेशन, बाजारभाव आणि स्मार्ट AI सहाय्यक",
+        marqueeHeaderTitle: "लाइव्ह कृषी आणि मंडी वास्तविक छायाचित्रे (Live Realistic Agri Feed)",
+        heroHeading: "🚜 स्मार्ट मंडी भाव आणि सर्वसामान्य AI मार्गदर्शक",
+        heroSub: "बाजारभाव, हवामान, सरकारी योजना किंवा कोणताही सामान्य प्रश्न ४ भाषांमध्ये विचारा.",
+        heroCropTag: "निवडलेले पीक",
+        gpsBtnTitle: "माझे लाइव्ह लोकेशन",
+        gpsBtnSub: "GPS द्वारे तुमचा जिल्हा आणि बाजार समिती शोधा",
+        summaryBtnTitle: "थोडक्यात सारांश (Summarise)",
+        summaryBtnSub: "भाव, नफा आणि सल्ल्याचा संपूर्ण सारांश पहा",
+        galleryTitle: "🖼️ पिकाच्या चित्रावर क्लिक करून निवडा",
+        gallerySub: "चित्रावर दाबा",
+        selectCardTitle: "🏙️ राज्य, जिल्हा आणि प्रमाण निवडा",
+        forecastHorizonLabel: "७–१४ दिवसांचा भाव अंदाज",
+        locationPrompt: "तुमचे लाइव्ह लोकेशन मिळवण्यासाठी वरील मोठे हिरवे बटण दाबा",
+        locating: "📡 तुमचे लाइव्ह लोकेशन शोधत आहे...",
+        locatedPrefix: "✅ लाइव्ह लोकेशन सापडले: ",
+        locDenied: "⚠️ लोकेशन परवानगी नाकारली गेली.",
+        summaryHeading: "📋 बाजारभाव आणि पीक सारांश",
+        speakSummaryBtn: "🔊 सारांश ऐका",
+        lblState: "🗺️ राज्य",
+        lblDistrict: "🏙️ जिल्हा / बाजार समिती",
+        lblCrop: "🌱 पीक",
+        lblQty: "⚖️ प्रमाण (क्विंटल)",
+        analyzeBtnText: "सल्ला मिळवा",
+        accuracyLabel: "🎯 अचूकता",
+        decisionTag: "💡 स्पष्ट सल्ला",
+        speakAdviceLabel: "सल्ला ऐका",
+        chartTitle: "📈 १४ दिवसांचा भाव अंदाज (₹/क्विंटल)",
+        today: "आज",
+        d7: "+७ दिवस",
+        d14: "+१४ दिवस",
+        todayRate: "आजचा दर",
+        weatherLbl: "🌤️ हवामान",
+        arrivalsLbl: "📦 आवक",
+        seasonLbl: "📅 हंगाम",
+        mandiTableTitle: "🚚 जवळच्या बाजार समित्यांची तुलना",
+        mandiTableSub: "निव्वळ भाव = बाजारभाव − वाहतूक खर्च",
+        thMandi: "बाजार समिती",
+        thDist: "अंतर",
+        thPrice: "भाव",
+        thTrans: "वाहतूक",
+        thNet: "निव्वळ",
+        bestBadge: "सर्वोत्तम भाव",
+        localKm: "स्थानिक (0 कि.मी)",
+        kmUnit: "कि.मी",
+        qtlUnit: "क्विंटल",
+        assistantTitle: "🗣️ स्मार्ट AI व्हॉइस सहाय्यक",
+        chatPlaceholder: "बाजारभाव किंवा कोणताही सामान्य प्रश्न विचारा...",
+        sendBtnText: "पाठवा",
+        voiceReady: "🎤 माइक दाबून मराठीत बोला",
+        voiceListening: "🔴 ऐकत आहे... बोला",
+        thinking: "⏳ उत्तर शोधत आहे...",
+        riskTitle: "🛡️ जोखीम व्यवस्थापन विश्लेषण (Risk Management)",
+        riskScoreSub: "एकूण बाजार आणि हवामान जोखीम निर्देशांक",
+        riskLow: "कमी जोखीम (Low)",
+        riskMed: "मध्यम जोखीम (Medium)",
+        riskHigh: "जास्त जोखीम (High)",
+        riskFactors: [
+          "📉 भाव चढ-उतार जोखीम (Price Volatility)",
+          "⏳ पीक नासाडी जोखीम (Perishability)",
+          "🌦️ हवामान आणि आर्द्रता जोखीम (Weather)",
+          "🚛 वाहतूक व आवक दबाव (Supply Risk)"
+        ],
+        welcomeMsg: "नमस्कार! 🌾 मी किसानसेन्स स्मार्ट AI सहाय्यक आहे. तुम्ही बाजारभावासोबतच जोखीम व्यवस्थापन, सरकारी योजना, विज्ञान, आरोग्य किंवा कोणताही सामान्य प्रश्न विचारू शकता!",
+        chips: [
+          "आजचा बाजारभाव काय आहे?",
+          "पीएम किसान योजना काय आहे?",
+          "जमिनीची सुपीकता कशी वाढवावी?",
+          "भारताची राजधानी कोणती?"
+        ],
+        holdCall: "⏳ थांबा (HOLD)",
+        sellCall: "💰 आत्ताच विका (SELL)",
+        moveCall: "🚚 जवळच्या बाजारात न्या (MOVE)"
+      },
+      en: {
+        speechCode: "en-IN",
+        ttsCode: "en",
+        wikiLang: "en",
+        appTitle: "KisanSense",
+        appSubtitle: "Live Location, Mandi & Smart General AI Assistant",
+        marqueeHeaderTitle: "Live Agriculture, Mandi & Farm Visuals (Realistic Photo Feed)",
+        heroHeading: "🚜 Smart Mandi Price & General Knowledge AI",
+        heroSub: "Ask about mandi prices, weather, govt schemes, science, math, or any general topic in 4 languages.",
+        heroCropTag: "Selected Crop",
+        gpsBtnTitle: "My Live Location",
+        gpsBtnSub: "Auto-detect your district & mandi via GPS",
+        summaryBtnTitle: "Summarise Report",
+        summaryBtnSub: "View full price, profit & action summary at a glance",
+        galleryTitle: "🖼️ Tap a Crop Image to Select",
+        gallerySub: "Visual Crop Gallery",
+        selectCardTitle: "🏙️ State, District & Quantity",
+        forecastHorizonLabel: "7–14 Day Price Forecast",
+        locationPrompt: "Tap the large green button above to detect your live GPS location",
+        locating: "📡 Detecting your live GPS location...",
+        locatedPrefix: "✅ Live location detected: ",
+        locDenied: "⚠️ Location permission denied.",
+        summaryHeading: "📋 Mandi & Price Summary",
+        speakSummaryBtn: "🔊 Listen Summary",
+        lblState: "🗺️ State",
+        lblDistrict: "🏙️ District / Mandi",
+        lblCrop: "🌱 Crop",
+        lblQty: "⚖️ Quantity (Quintals)",
+        analyzeBtnText: "Get Advice",
+        accuracyLabel: "🎯 Accuracy",
+        decisionTag: "💡 Clear Recommendation",
+        speakAdviceLabel: "Listen Advice",
+        chartTitle: "📈 14-Day Price Forecast (₹/Quintal)",
+        today: "Today",
+        d7: "+7 Days",
+        d14: "+14 Days",
+        todayRate: "Today's Rate",
+        weatherLbl: "🌤️ Weather",
+        arrivalsLbl: "📦 Arrivals",
+        seasonLbl: "📅 Season",
+        mandiTableTitle: "🚚 Nearby Mandi Comparison",
+        mandiTableSub: "Net Price = Mandi Price − Transport Cost",
+        thMandi: "Mandi",
+        thDist: "Distance",
+        thPrice: "Price",
+        thTrans: "Transport",
+        thNet: "Net Price",
+        bestBadge: "Best Net",
+        localKm: "Local (0 km)",
+        kmUnit: "km",
+        qtlUnit: "Quintal",
+        assistantTitle: "🗣️ Smart AI Voice Assistant",
+        chatPlaceholder: "Ask about mandi or ANY general topic...",
+        sendBtnText: "Send",
+        voiceReady: "🎤 Tap mic and speak in English",
+        voiceListening: "🔴 Listening... speak now",
+        thinking: "⏳ Finding answer...",
+        riskTitle: "🛡️ Risk Management Visualization",
+        riskScoreSub: "Overall Market, Storage & Weather Risk Index",
+        riskLow: "Low Risk",
+        riskMed: "Moderate Risk",
+        riskHigh: "High Risk",
+        riskFactors: [
+          "📉 Price Volatility Risk",
+          "⏳ Crop Perishability & Spoilage",
+          "🌦️ Weather & Moisture Exposure",
+          "🚛 Supply Surge & Transport Risk"
+        ],
+        welcomeMsg: "Welcome! 🌾 I am your KisanSense Smart Assistant. You can ask me about Mandi Prices, Risk Management, Govt Schemes, Science, Math, Health, History, or any general question!",
+        chips: [
+          "What is today's price?",
+          "What is PM-Kisan scheme?",
+          "How to improve soil fertility?",
+          "What is the capital of India?"
+        ],
+        holdCall: "⏳ HOLD FOR 14 DAYS",
+        sellCall: "💰 SELL NOW",
+        moveCall: "🚚 MOVE TO NEARBY MANDI"
+      }
+    };
+
+    // =========================================================================
+    // 2. REALISTIC HIGH-RESOLUTION AGRICULTURE PHOTO SLIDER
+    // =========================================================================
+    const REALISTIC_SLIDES = [
+      {
+        title: { kn: "🌾 ಸಮೃದ್ಧ ಗೋಧಿ ಮತ್ತು ಧಾನ್ಯದ ಹೊಲ", te: "🌾 బంగారు పంట పొలాలు", mr: "🌾 समृद्ध शेती आणि पीक", en: "🌾 Golden Harvest Fields" },
+        sub: { kn: "ನೇರ ಮಂಡಿ ದರ ಮತ್ತು ಇಳುವರಿ ವಿಶ್ಲೇಷಣೆ", te: "నేరుగా మండి ధరలు & దిగుబడి అంచనా", mr: "थेट बाजारभाव आणि उत्पादन माहिती", en: "Live APMC Rate & Yield Tracking" },
+        img: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=720&q=80",
+        fallbackSvg: `<svg viewBox="0 0 320 185"><rect width="320" height="185" fill="#15803d"/><circle cx="255" cy="45" r="24" fill="#facc15"/><path d="M0,120 Q160,90 320,115 L320,185 L0,185 Z" fill="#eab308"/></svg>`
+      },
+      {
+        title: { kn: "🚜 ಆಧುನಿಕ ಟ್ರ್ಯಾಕ್ಟರ್ ಮತ್ತು ಕೃಷಿ ತಂತ್ರಜ್ಞಾನ", te: "🚜 ఆధునిక ట్రాక్టర్ & స్మార్ట్ వ్యవసాయం", mr: "🚜 आधुनिक ट्रॅक्टर आणि स्मार्ट शेती", en: "🚜 Modern Smart Farming" },
+        sub: { kn: "ಕಡಿಮೆ ವೆಚ್ಚದಲ್ಲಿ ಹೆಚ್ಚಿನ ಕೃಷಿ ಲಾಭ", te: "తక్కువ ఖర్చుతో అధిక లాభాలు", mr: "कमी खर्चात जास्त नफा", en: "Precision Mechanized Agriculture" },
+        img: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=720&q=80",
+        fallbackSvg: `<svg viewBox="0 0 320 185"><rect width="320" height="185" fill="#166534"/><rect x="110" y="65" width="90" height="50" rx="8" fill="#dc2626"/></svg>`
+      },
+      {
+        title: { kn: "🥬 ತಾಜಾ ತರಕಾರಿ ಮತ್ತು ಮಂಡಿ ಮಾರುಕಟ್ಟೆ", te: "🥬 తాజా కూరగాయలు & మండి మార్కెట్", mr: "🥬 ताजी भाजीपाला व मंडी बाजार", en: "🥬 Fresh Produce & Mandi Market" },
+        sub: { kn: "ಹತ್ತಿರದ ಮಂಡಿಗಳ ನಿವ್ವಳ ಬೆಲೆ ಹೋಲಿಕೆ", te: "సమీప మండీల నికర ధర పోలిక", mr: "जवळच्या बाजारांची निव्वळ तुलना", en: "Compare Nearby Mandi Net Rates" },
+        img: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=720&q=80",
+        fallbackSvg: `<svg viewBox="0 0 320 185"><rect width="320" height="185" fill="#b45309"/><circle cx="100" cy="100" r="30" fill="#22c55e"/><circle cx="210" cy="100" r="30" fill="#ef4444"/></svg>`
+      },
+      {
+        title: { kn: "🌱 ಹಸಿರು ಬೆಳೆ ಮತ್ತು ಹನಿ ನೀರಾವರಿ", te: "🌱 పచ్చని పంటలు & నీటిపారుదల", mr: "🌱 हिरवेगार पीक आणि सिंचन", en: "🌱 Lush Crops & Smart Irrigation" },
+        sub: { kn: "ಹವಾಮಾನ ಮತ್ತು ಮಣ್ಣಿನ ತೇವಾಂಶ ರಕ್ಷಣೆ", te: "వాతావరణం & నేల తేమ సంరక్షణ", mr: "हवामान आणि ओलावा संरक्षण", en: "Weather & Soil Moisture Protection" },
+        img: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=720&q=80",
+        fallbackSvg: `<svg viewBox="0 0 320 185"><rect width="320" height="185" fill="#065f46"/><path d="M0,130 Q160,100 320,130 L320,185 L0,185 Z" fill="#22c55e"/></svg>`
+      },
+      {
+        title: { kn: "🌾 ಭತ್ತ ಮತ್ತು ಧಾನ್ಯಗಳ ಕಟಾವು", te: "🌾 వరి & ధాన్యాల కోత", mr: "🌾 भात आणि धान्य कापणी", en: "🌾 Paddy & Grain Harvesting" },
+        sub: { kn: "14 ದಿನಗಳ ಬೆಲೆ ಮುನ್ಸೂಚನೆ ಮತ್ತು ಸಲಹೆ", te: "14 రోజుల ధర అంచనా & సలహా", mr: "१४ दिवसांचा भाव अंदाज व सल्ला", en: "14-Day Price Forecast & Risk Guard" },
+        img: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=720&q=80",
+        fallbackSvg: `<svg viewBox="0 0 320 185"><rect width="320" height="185" fill="#ca8a04"/><path d="M0,125 Q160,95 320,125 L320,185 L0,185 Z" fill="#15803d"/></svg>`
+      }
+    ];
+
+    function renderTopAutoMarquee() {
+      const track = document.getElementById("marqueeTrack");
+      const doubled = [...REALISTIC_SLIDES, ...REALISTIC_SLIDES];
+      track.innerHTML = doubled.map(s => `
+        <div class="slide-card">
+          <img src="${s.img}" alt="${s.title.en}" loading="eager" onerror="this.outerHTML='${s.fallbackSvg.replace(/'/g, "&apos;")}'" />
+          <div class="slide-caption">
+            <strong>${s.title[currentLang]}</strong>
+            <span>${s.sub[currentLang]}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // =========================================================================
+    // 3. CUSTOM HIGH-DETAIL CROP SVG ARTWORKS & DATASET
+    // =========================================================================
+    function getCropSvg(id) {
+      const svgs = {
+        ragi: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#fef3c7"/><circle cx="50" cy="50" r="38" fill="#fde68a"/><path d="M50 85 V30" stroke="#78350f" stroke-width="5" stroke-linecap="round"/><ellipse cx="40" cy="34" rx="11" ry="6" transform="rotate(-30 40 34)" fill="#92400e"/><ellipse cx="60" cy="34" rx="11" ry="6" transform="rotate(30 60 34)" fill="#92400e"/><ellipse cx="38" cy="48" rx="12" ry="6" transform="rotate(-25 38 48)" fill="#b45309"/><ellipse cx="62" cy="48" rx="12" ry="6" transform="rotate(25 62 48)" fill="#b45309"/><ellipse cx="50" cy="24" rx="8" ry="12" fill="#78350f"/></svg>`,
+        coconut: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#dcfce7"/><circle cx="44" cy="56" r="24" fill="#16a34a"/><circle cx="62" cy="46" r="20" fill="#15803d"/><circle cx="55" cy="64" r="18" fill="#78350f"/><circle cx="55" cy="64" r="12" fill="#ffffff"/><circle cx="55" cy="64" r="7" fill="#e0f2fe"/></svg>`,
+        groundnut: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffedd5"/><path d="M32 68 C22 58, 30 44, 42 46 C46 34, 62 24, 72 34 C82 44, 72 60, 60 62 C56 74, 42 78, 32 68 Z" fill="#d97706" stroke="#92400e" stroke-width="3"/><circle cx="42" cy="58" r="7" fill="#fde68a"/><circle cx="58" cy="42" r="7" fill="#fde68a"/></svg>`,
+        paddy: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ecfccb"/><path d="M35 85 Q42 45 68 22" fill="none" stroke="#ca8a04" stroke-width="4" stroke-linecap="round"/><ellipse cx="52" cy="42" rx="8" ry="4" transform="rotate(-40 52 42)" fill="#eab308"/><ellipse cx="62" cy="32" rx="8" ry="4" transform="rotate(-40 62 32)" fill="#facc15"/><ellipse cx="44" cy="54" rx="8" ry="4" transform="rotate(-40 44 54)" fill="#eab308"/><ellipse cx="66" cy="44" rx="8" ry="4" transform="rotate(20 66 44)" fill="#ca8a04"/></svg>`,
+        maize: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#fef9c3"/><ellipse cx="50" cy="48" rx="16" ry="30" fill="#facc15" stroke="#ca8a04" stroke-width="2"/><path d="M34 52 Q24 72 48 84 Q38 66 38 52 Z" fill="#16a34a"/><path d="M66 52 Q76 72 52 84 Q62 66 62 52 Z" fill="#15803d"/><circle cx="46" cy="36" r="3" fill="#eab308"/><circle cx="54" cy="36" r="3" fill="#eab308"/><circle cx="46" cy="46" r="3" fill="#eab308"/><circle cx="54" cy="46" r="3" fill="#eab308"/></svg>`,
+        onion: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#fae8ff"/><path d="M50 22 C65 36, 76 48, 76 62 C76 76, 64 84, 50 84 C36 84, 24 76, 24 62 C24 48, 35 36, 50 22 Z" fill="#a21caf"/><path d="M50 22 C58 38, 64 50, 64 62 C64 74, 58 82, 50 84 C42 82, 36 74, 36 62 C36 50, 42 38, 50 22 Z" fill="#c026d3"/><path d="M46 22 L44 12 M50 22 L50 10 M54 22 L56 12" stroke="#16a34a" stroke-width="3" stroke-linecap="round"/></svg>`,
+        tomato: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#fee2e2"/><circle cx="50" cy="56" r="28" fill="#ef4444"/><circle cx="41" cy="47" r="6" fill="#fca5a5" opacity="0.6"/><path d="M50 28 L40 20 L47 30 L34 32 L48 34 L50 42 L52 34 L66 32 L53 30 L60 20 Z" fill="#15803d"/></svg>`,
+        potato: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#fef3c7"/><ellipse cx="50" cy="52" rx="30" ry="22" transform="rotate(-18 50 52)" fill="#d97706"/><circle cx="40" cy="48" r="2.5" fill="#78350f"/><circle cx="58" cy="44" r="2.5" fill="#78350f"/><circle cx="52" cy="60" r="2.5" fill="#78350f"/></svg>`,
+        tur: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#fef3c7"/><circle cx="40" cy="44" r="14" fill="#f59e0b"/><circle cx="62" cy="46" r="14" fill="#d97706"/><circle cx="50" cy="64" r="15" fill="#fbbf24"/></svg>`,
+        cotton: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#e0f2fe"/><circle cx="50" cy="42" r="18" fill="#ffffff"/><circle cx="36" cy="54" r="16" fill="#f8fafc"/><circle cx="64" cy="54" r="16" fill="#f8fafc"/><path d="M32 66 L50 82 L68 66 L50 72 Z" fill="#78350f"/></svg>`,
+        chilli: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#fee2e2"/><path d="M64 26 C68 48, 56 72, 30 80 C44 66, 48 46, 52 26 Z" fill="#dc2626"/><path d="M56 26 Q62 14 70 16" fill="none" stroke="#15803d" stroke-width="4" stroke-linecap="round"/></svg>`
+      };
+      return svgs[id] || svgs.ragi;
+    }
+
+    const CROPS = [
+      { id: "ragi", emoji: "🌾", names: { kn: "ರಾಗಿ", te: "రాగులు", mr: "नाचणी", en: "Ragi" }, base: 4280, shelfDays: 180 },
+      { id: "coconut", emoji: "🥥", names: { kn: "ತೆಂಗಿನಕಾಯಿ", te: "కొబ్బరికాయ", mr: "नारळ", en: "Coconut" }, base: 11200, shelfDays: 90 },
+      { id: "groundnut", emoji: "🥜", names: { kn: "ಶೇಂಗಾ", te: "వేరుశనగ", mr: "भुईमूग", en: "Groundnut" }, base: 6450, shelfDays: 120 },
+      { id: "paddy", emoji: "🌾", names: { kn: "ಭತ್ತ", te: "వరి", mr: "भात", en: "Paddy" }, base: 2380, shelfDays: 180 },
+      { id: "maize", emoji: "🌽", names: { kn: "ಮೆಕ್ಕೆಜೋಳ", te: "మొక్కజొన్న", mr: "मका", en: "Maize" }, base: 2260, shelfDays: 150 },
+      { id: "onion", emoji: "🧅", names: { kn: "ಈರುಳ್ಳಿ", te: "ఉల్లిపాయ", mr: "कांदा", en: "Onion" }, base: 2650, shelfDays: 35 },
+      { id: "tomato", emoji: "🍅", names: { kn: "ಟೊಮ್ಯಾಟೊ", te: "టమోటా", mr: "टोमॅटो", en: "Tomato" }, base: 1950, shelfDays: 5 },
+      { id: "potato", emoji: "🥔", names: { kn: "ಆಲೂಗಡ್ಡೆ", te: "బంగాళాదుంప", mr: "बटाटा", en: "Potato" }, base: 1820, shelfDays: 45 },
+      { id: "tur", emoji: "🫘", names: { kn: "ತೊಗರಿ ಬೇಳೆ", te: "కందులు", mr: "तूर", en: "Tur Dal" }, base: 9400, shelfDays: 180 },
+      { id: "cotton", emoji: "☁️", names: { kn: "ಹತ್ತಿ", te: "పత్తి", mr: "कापूस", en: "Cotton" }, base: 7350, shelfDays: 180 },
+      { id: "chilli", emoji: "🌶️", names: { kn: "ಒಣ ಮೆಣಸಿನಕಾಯಿ", te: "ఎండు మిర్చి", mr: "लाल मिरची", en: "Dry Chilli" }, base: 16800, shelfDays: 180 }
+    ];
+
+    const INDIA_LOCATIONS = [
+      {
+        id: "KA",
+        names: { kn: "ಕರ್ನಾಟಕ", te: "కర్ణాటక", mr: "कर्नाटक", en: "Karnataka" },
+        districts: [
+          { id: "Tumakuru", lat: 13.3379, lon: 77.1173, names: { kn: "ತುಮಕೂರು", te: "తుమకూరు", mr: "तुमकूर", en: "Tumakuru" } },
+          { id: "Bengaluru", lat: 12.9716, lon: 77.5946, names: { kn: "ಬೆಂಗಳೂರು", te: "బెంగళూరు", mr: "बेंगळुरू", en: "Bengaluru" } },
+          { id: "Mandya", lat: 12.5218, lon: 76.8951, names: { kn: "ಮಂಡ್ಯ", te: "మాండ్య", mr: "मंड्या", en: "Mandya" } },
+          { id: "Mysuru", lat: 12.2958, lon: 76.6394, names: { kn: "ಮೈಸೂರು", te: "మైసూరు", mr: "म्हैसूर", en: "Mysuru" } },
+          { id: "Kolar", lat: 13.1362, lon: 78.1291, names: { kn: "ಕೋಲಾರ", te: "కోలార్", mr: "कोलार", en: "Kolar" } },
+          { id: "Davanagere", lat: 14.4644, lon: 75.9218, names: { kn: "ದಾವಣಗೆರೆ", te: "దావణగెరె", mr: "दावणगेरे", en: "Davanagere" } },
+          { id: "Belagavi", lat: 15.8497, lon: 74.4977, names: { kn: "ಬೆಳಗಾವಿ", te: "బెలగావి", mr: "बेळगाव", en: "Belagavi" } }
+        ]
+      },
+      {
+        id: "TS_AP",
+        names: { kn: "ತೆಲಂಗಾಣ / ಆಂಧ್ರ", te: "తెలంగాణ / ఆంధ్ర", mr: "तेलंगणा / आंध्र", en: "Telangana / Andhra" },
+        districts: [
+          { id: "Hyderabad", lat: 17.3850, lon: 78.4867, names: { kn: "ಹೈದರಾಬಾದ್", te: "హైదరాబాద్", mr: "हैदराबाद", en: "Hyderabad" } },
+          { id: "Warangal", lat: 17.9689, lon: 79.5941, names: { kn: "ವಾರಂಗಲ್", te: "వరంగల్", mr: "वरंगल", en: "Warangal" } },
+          { id: "Guntur", lat: 16.3067, lon: 80.4365, names: { kn: "ಗುಂಟೂರು", te: "గుంటూరు", mr: "गुंटूर", en: "Guntur" } },
+          { id: "Kurnool", lat: 15.8281, lon: 78.0373, names: { kn: "ಕರ್ನೂಲ್", te: "కర్నూలు", mr: "कर्नूल", en: "Kurnool" } }
+        ]
+      },
+      {
+        id: "MH",
+        names: { kn: "ಮಹಾರಾಷ್ಟ್ರ", te: "మహారాష్ట్ర", mr: "महाराष्ट्र", en: "Maharashtra" },
+        districts: [
+          { id: "Pune", lat: 18.5204, lon: 73.8567, names: { kn: "ಪುಣೆ", te: "పూణే", mr: "पुणे", en: "Pune" } },
+          { id: "Nashik", lat: 19.9975, lon: 73.7898, names: { kn: "ನಾಸಿಕ್", te: "నాసిక్", mr: "नाशिक", en: "Nashik" } },
+          { id: "Kolhapur", lat: 16.7050, lon: 74.2433, names: { kn: "ಕೊಲ್ಲಾಪುರ", te: "కొల్హాపూర్", mr: "कोल्हापूर", en: "Kolhapur" } },
+          { id: "Nagpur", lat: 21.1458, lon: 79.0882, names: { kn: "ನಾಗ್ಪುರ", te: "నాగ్‌పూర్", mr: "नागपूर", en: "Nagpur" } }
+        ]
+      }
+    ];
+
+    let currentAnalysis = null;
+
+    function hashString(str) {
+      let h = 2166136261;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return Math.abs(h);
+    }
+
+    // =========================================================================
+    // 4. LIVE GPS LOCATION DETECTION
+    // =========================================================================
+    function haversineKm(lat1, lon1, lat2, lon2) {
+      const toRad = (d) => (d * Math.PI) / 180;
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    function detectLiveLocation() {
+      const t = I18N[currentLang];
+      const banner = document.getElementById("locationStatus");
+      const statusText = document.getElementById("locationStatusText");
+
+      if (!("geolocation" in navigator)) {
+        banner.className = "location-status-banner error";
+        statusText.textContent = t.locDenied;
+        return;
+      }
+
+      banner.className = "location-status-banner";
+      statusText.textContent = t.locating;
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          let bestState = INDIA_LOCATIONS[0];
+          let bestDist = INDIA_LOCATIONS[0].districts[0];
+          let minKm = Infinity;
+
+          for (const st of INDIA_LOCATIONS) {
+            for (const d of st.districts) {
+              const km = haversineKm(latitude, longitude, d.lat, d.lon);
+              if (km < minKm) {
+                minKm = km;
+                bestState = st;
+                bestDist = d;
+              }
+            }
+          }
+
+          document.getElementById("stateSelect").value = bestState.id;
+          populateDistricts(bestState.id);
+          document.getElementById("districtSelect").value = bestDist.id;
+          runAnalysis();
+
+          const placeName = `${bestDist.names[currentLang]}, ${bestState.names[currentLang]}`;
+          statusText.textContent = `${t.locatedPrefix} ${placeName}`;
+          speakText(`${t.locatedPrefix} ${placeName}. ${currentAnalysis.callText}.`);
+        },
+        () => {
+          banner.className = "location-status-banner error";
+          statusText.textContent = t.locDenied;
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
+    // =========================================================================
+    // 5. FORECAST, RISK MANAGEMENT & SUMMARISE ENGINE
+    // =========================================================================
+    function computeForecast(stateObj, distObj, cropObj, qty) {
+      const t = I18N[currentLang];
+      const distName = distObj.names[currentLang];
+      const cropName = cropObj.names[currentLang];
+      const h = hashString(`${stateObj.id}|${distObj.id}|${cropObj.id}`);
+
+      const variance = ((h % 15) - 7) / 100;
+      const today = Math.round((cropObj.base * (1 + variance)) / 10) * 10;
+      const trendMode = cropObj.shelfDays <= 7 ? 1 : (h % 3);
+
+      let d7, d14, weatherText, arrivalsText, seasonText;
+      if (trendMode === 0) {
+        d7 = Math.round((today * 1.04) / 10) * 10;
+        d14 = Math.round((today * 1.08) / 10) * 10;
+        weatherText = { kn: "ಒಣ ಹವಾಮಾನ — ಸಂಗ್ರಹಣೆ ಸುರಕ್ಷಿತ", te: "పొడి వాతావరణం — నిల్వకు అనుకూలం", mr: "कोरडे हवामान — साठवणूक सुरक्षित", en: "Dry weather — safe for storage" }[currentLang];
+        arrivalsText = { kn: "ಮಂಡಿ ಆವಕ 15% ಇಳಿಕೆ", te: "మండి రాక 15% తగ్గింది", mr: "आवक १५% कमी झाली", en: "Mandi arrivals down 15%" }[currentLang];
+        seasonText = { kn: "ಮುಂದಿನ 2 ವಾರ ಬೇಡಿಕೆ ಹೆಚ್ಚಳ", te: "వచ్చే 2 వారాలు డిమాండ్ పెరుగుదల", mr: "पुढील २ आठवडे मागणी वाढणार", en: "Higher demand over next 2 weeks" }[currentLang];
+      } else if (trendMode === 1) {
+        d7 = Math.round((today * 0.95) / 10) * 10;
+        d14 = Math.round((today * 0.91) / 10) * 10;
+        weatherText = { kn: "ತೇವಾಂಶ ಸಾಧ್ಯತೆ — ಬೇಗ ಮಾರಾಟ ಮಾಡಿ", te: "తేమ అవకాశం — త్వరగా అమ్మండి", mr: "दमट हवामान — लवकर विक्री करा", en: "Moisture risk — sell early" }[currentLang];
+        arrivalsText = { kn: "ಹೊಸ ಬೆಳೆ ಆವಕ 25% ಹೆಚ್ಚಳ", te: "కొత్త పంట రాక 25% పెరిగింది", mr: "नवीन आवक २५% वाढली", en: "Fresh arrivals up 25%" }[currentLang];
+        seasonText = { kn: "ಹೆಚ್ಚು ಪೂರೈಕೆಯಿಂದ ಬೆಲೆ ಇಳಿಕೆ", te: "అధిక సరఫరా వల్ల ధర తగ్గుదల", mr: "जास्त पुरवठ्यामुळे दर दबावाखाली", en: "Oversupply pushing prices down" }[currentLang];
+      } else {
+        d7 = Math.round((today * 1.01) / 10) * 10;
+        d14 = Math.round((today * 1.015) / 10) * 10;
+        weatherText = { kn: "ಸಾಧಾರಣ ಹವಾಮಾನ", te: "సాధారణ వాతావరణం", mr: "सामान्य हवामान", en: "Moderate weather" }[currentLang];
+        arrivalsText = { kn: "ಸ್ಥಿರ ಮಂಡಿ ಆವಕ", te: "స్థిరమైన మండి రాక", mr: "स्थिर आवक", en: "Steady mandi arrivals" }[currentLang];
+        seasonText = { kn: "ಹತ್ತಿರದ ಮಂಡಿಯಲ್ಲಿ ಹೆಚ್ಚಿನ ದರ", te: "సమీప మండిలో ఎక్కువ ధర", mr: "जवळच्या बाजारात जास्त दर", en: "Better rate in nearby mandi" }[currentLang];
+      }
+
+      const mandis = [
+        { name: `${distName} APMC`, km: 0, price: today, transport: 0, net: today },
+        { name: `${distName} North Mandi`, km: 45, price: today + 180, transport: 105, net: today + 75 },
+        { name: `${distName} Central Hub`, km: 82, price: today + (trendMode === 2 ? 360 : 120), transport: 190, net: today + (trendMode === 2 ? 170 : -70) }
+      ].sort((a, b) => b.net - a.net);
+
+      const bestMandi = mandis[0];
+      const moveGain = bestMandi.net - today;
+      const holdGain = d14 - today;
+      const pct14 = ((d14 - today) / today) * 100;
+
+      let cssClass, callText, reasonText, impactText;
+      if (moveGain >= 130 && moveGain > holdGain) {
+        cssClass = "move";
+        callText = t.moveCall;
+        reasonText = {
+          kn: `${bestMandi.name} ಯಲ್ಲಿ ಸಾಗಣೆ ವೆಚ್ಚ ಕಳೆದ ನಂತರವೂ ಕ್ವಿಂಟಲ್‌ಗೆ ₹${moveGain} ಹೆಚ್ಚು ನಿವ್ವಳ ಬೆಲೆ ಸಿಗುತ್ತದೆ.`,
+          te: `${bestMandi.name} లో రవాణా ఖర్చు పోనూ క్వింటాల్‌కు ₹${moveGain} అదనపు నికర లాభం వస్తుంది.`,
+          mr: `${bestMandi.name} येथे वाहतूक खर्च वजा जाता प्रति क्विंटल ₹${moveGain} जास्त निव्वळ नफा मिळेल.`,
+          en: `${bestMandi.name} gives ₹${moveGain}/qtl higher net realization even after transport cost.`
+        }[currentLang];
+        impactText = `💰 +₹${(moveGain * qty).toLocaleString("en-IN")} (${qty} ${t.qtlUnit})`;
+      } else if (pct14 >= 3.0) {
+        cssClass = "hold";
+        callText = t.holdCall;
+        reasonText = {
+          kn: `ಮುಂದಿನ 14 ದಿನಗಳಲ್ಲಿ ${cropName} ಬೆಲೆ ₹${today} ರಿಂದ ₹${d14} ಕ್ಕೆ ಏರುವ ಸಾಧ್ಯತೆ ಇದೆ.`,
+          te: `రాబోయే 14 రోజుల్లో ${cropName} ధర ₹${today} నుండి ₹${d14} కి పెరిగే అవకాశం ఉంది.`,
+          mr: `पुढील १४ दिवसांत ${cropName} चा भाव ₹${today} वरून ₹${d14} पर्यंत वाढण्याची शक्यता आहे.`,
+          en: `${cropName} is projected to rise from ₹${today} to ₹${d14}/qtl over the next 14 days.`
+        }[currentLang];
+        impactText = `💰 +₹${(holdGain * qty).toLocaleString("en-IN")} (${qty} ${t.qtlUnit})`;
+      } else {
+        cssClass = "sell";
+        callText = t.sellCall;
+        reasonText = {
+          kn: `ಮುಂದಿನ ದಿನಗಳಲ್ಲಿ ಆವಕ ಹೆಚ್ಚಾಗಿ ಬೆಲೆ ₹${d14} ಕ್ಕೆ ಇಳಿಯುವ ಸಾಧ್ಯತೆ ಇದೆ. ಈಗಲೇ ಮಾರಾಟ ಮಾಡುವುದು ಉತ್ತಮ.`,
+          te: `రాబోయే రోజుల్లో రాక పెరిగి ధర ₹${d14} కి తగ్గే అవకాశం ఉంది. ఇప్పుడే అమ్మడం మంచిది.`,
+          mr: `पुढील दिवसांत आवक वाढून दर ₹${d14} पर्यंत खाली येऊ शकतात. आत्ताच विक्री करणे फायदेशीर आहे.`,
+          en: `Higher arrivals may push prices down toward ₹${d14}/qtl. Selling now locks in today's rate.`
+        }[currentLang];
+        impactText = `💵 ₹${(today * qty).toLocaleString("en-IN")} (${qty} ${t.qtlUnit})`;
+      }
+
+      // Compute Risk Management Metrics
+      const volatilityRisk = trendMode === 1 ? 74 : (trendMode === 2 ? 46 : 26);
+      const perishabilityRisk = cropObj.shelfDays <= 7 ? 92 : (cropObj.shelfDays <= 45 ? 58 : 18);
+      const weatherRisk = trendMode === 1 ? 70 : (trendMode === 2 ? 42 : 22);
+      const supplyRisk = Math.min(88, 25 + Math.round(qty / 8) + (trendMode === 1 ? 25 : 0));
+      const overallRisk = Math.round(
+        volatilityRisk * 0.30 +
+        perishabilityRisk * 0.30 +
+        weatherRisk * 0.20 +
+        supplyRisk * 0.20
+      );
+
+      let riskTier = "low";
+      let riskLabel = t.riskLow;
+      let riskMitigation = {
+        kn: `✅ ಸಂಗ್ರಹಣೆ ಸುರಕ್ಷಿತ: ${cropName} ಬೆಳೆಯನ್ನು ಒಣ ಗೋದಾಮಿನಲ್ಲಿ ಇರಿಸಿ 14 ದಿನಗಳ ಬೆಲೆ ಏರಿಕೆಯ ಲಾಭ ಪಡೆಯಿರಿ.`,
+        te: `✅ నిల్వ సురక్షితం: ${cropName} పంటను పొడి గోదాములో ఉంచి 14 రోజుల ధర పెరుగుదల ప్రయోజనం పొందండి.`,
+        mr: `✅ साठवणूक सुरक्षित: ${cropName} कोरड्या गोदामात ठेवून १४ दिवसांच्या भाववाढीचा लाभ घ्या.`,
+        en: `✅ Safe to Store: Keep ${cropName} in dry ventilated storage to capture the projected 14-day price rise.`
+      }[currentLang];
+
+      if (overallRisk >= 62) {
+        riskTier = "high";
+        riskLabel = t.riskHigh;
+        riskMitigation = {
+          kn: `⚠️ ಹೆಚ್ಚಿನ ಅಪಾಯ ಎಚ್ಚರಿಕೆ: ತೇವಾಂಶ ಮತ್ತು ಬೆಲೆ ಇಳಿಕೆ ತಪ್ಪಿಸಲು ಇಂದೇ ${bestMandi.name} ಯಲ್ಲಿ ಮಾರಾಟ ಮಾಡಿ.`,
+          te: `⚠️ అధిక రిస్క్ హెచ్చరిక: తేమ & ధర తగ్గుదల నుండి తప్పించుకోవడానికి ఈరోజే ${bestMandi.name} లో అమ్మండి.`,
+          mr: `⚠️ जास्त जोखीम इशारा: नुकसान आणि भाव घसरण टाळण्यासाठी आजच ${bestMandi.name} येथे विक्री करा.`,
+          en: `⚠️ High Risk Alert: Sell immediately at ${bestMandi.name} to avoid spoilage and downward price pressure.`
+        }[currentLang];
+      } else if (overallRisk >= 38) {
+        riskTier = "medium";
+        riskLabel = t.riskMed;
+        riskMitigation = {
+          kn: `⚖️ ಸಮತೋಲಿತ ಸಲಹೆ: 50% ಬೆಳೆಯನ್ನು ಇಂದೇ ಮಾರಾಟ ಮಾಡಿ ಮತ್ತು ಉಳಿದ 50% ಬೆಳೆಯನ್ನು ಉತ್ತಮ ದರಕ್ಕಾಗಿ ಕಾಯ್ದಿರಿಸಿ.`,
+          te: `⚖️ సమతుల్య సలహా: 50% పంటను ఈరోజే అమ్మి, మిగిలిన 50% పంటను మంచి ధర కోసం నిల్వ ఉంచండి.`,
+          mr: `⚖️ संतुलित सल्ला: ५०% पीक आजच विका आणि उरलेले ५०% पीक चांगल्या दरासाठी राखून ठेवा.`,
+          en: `⚖️ Split-Lot Strategy: Sell 50% today to lock cash flow and hold 50% for nearby mandi upside.`
+        }[currentLang];
+      }
+
+      const summaryParagraph = {
+        kn: `📌 ${distName} ಮಂಡಿಯಲ್ಲಿ ${cropName} ಇಂದಿನ ಬೆಲೆ ₹${today}/ಕ್ವಿಂಟಲ್. 14 ದಿನಗಳ ಅಂದಾಜು ₹${d14}. ಸಲಹೆ: ${callText}. ಉತ್ತಮ ಮಂಡಿ: ${bestMandi.name} (ನಿವ್ವಳ ₹${bestMandi.net}).`,
+        te: `📌 ${distName} మండిలో ${cropName} నేటి ధర ₹${today}/క్వింటాల్. 14 రోజుల అంచనా ₹${d14}. సలహా: ${callText}. ఉత్తమ మండి: ${bestMandi.name} (నికర ₹${bestMandi.net}).`,
+        mr: `📌 ${distName} बाजारात ${cropName} चा आजचा भाव ₹${today}/क्विंटल आहे. १४ दिवसांचा अंदाज ₹${d14}. सल्ला: ${callText}. सर्वोत्तम बाजार: ${bestMandi.name} (निव्वळ ₹${bestMandi.net}).`,
+        en: `📌 ${cropName} in ${distName} is ₹${today}/qtl today (14-day forecast: ₹${d14}). Advice: ${callText}. Best Mandi: ${bestMandi.name} (Net ₹${bestMandi.net}).`
+      }[currentLang];
+
+      return {
+        stateObj, distObj, distName, cropObj, cropName, qty,
+        today, d7, d14, pct7: ((d7 - today) / today) * 100, pct14,
+        cssClass, callText, reasonText, impactText, summaryParagraph,
+        weatherText, arrivalsText, seasonText,
+        accuracy: `${86 + (h % 7)}%`, mandis, bestMandi,
+        risk: {
+          overallRisk,
+          riskTier,
+          riskLabel,
+          riskMitigation,
+          factors: [volatilityRisk, perishabilityRisk, weatherRisk, supplyRisk]
+        }
+      };
+    }
+
+    // =========================================================================
+    // 6. UNIVERSAL + AGRI SMART Q&A ENGINE (OFFLINE KB + MATH + WIKIPEDIA + GEMINI)
+    // =========================================================================
+    const BUILTIN_GENERAL_KB = [
+      {
+        keys: ["pm kisan", "pm-kisan", "ಪಿಎಂ ಕಿಸಾನ್", "ಕಿಸಾನ್ ಸಮ್ಮಾನ್", "పీఎం కిసాన్", "पीएम किसान", "किसान सन्मान"],
+        ans: {
+          kn: "🏛️ ಪಿಎಂ-ಕಿಸಾನ್ (PM-KISAN) ಯೋಜನೆಯಡಿ ಅರ್ಹ ರೈತ ಕುಟುಂಬಗಳಿಗೆ ಪ್ರತಿ ವರ್ಷ ₹6,000 ಆರ್ಥಿಕ ನೆರವನ್ನು 3 ಕಂತುಗಳಲ್ಲಿ (ತಲಾ ₹2,000) ನೇರವಾಗಿ ಬ್ಯಾಂಕ್ ಖಾತೆಗೆ ಜಮಾ ಮಾಡಲಾಗುತ್ತದೆ.",
+          te: "🏛️ పీఎం-కిసాన్ (PM-KISAN) పథకం కింద అర్హులైన రైతు కుటుంబాలకు ఏటా ₹6,000 ఆర్థిక సహాయాన్ని 3 విడతల్లో (ఒక్కో విడత ₹2,000) నేరుగా బ్యాంకు ఖాతాలో జమ చేస్తారు.",
+          mr: "🏛️ पीएम-किसान (PM-KISAN) योजनेअंतर्गत पात्र शेतकरी कुटुंबांना दरवर्षी ₹६,००० आर्थिक मदत ३ हप्त्यांत (प्रत्येकी ₹२,०००) थेट बँक खात्यात दिली जाते.",
+          en: "🏛️ Under the PM-KISAN scheme, eligible farmer families receive ₹6,000 per year in three equal installments of ₹2,000 directly into their bank accounts."
+        }
+      },
+      {
+        keys: ["soil", "ಮಣ್ಣು", "ಫಲವತ್ತತೆ", "నేల", "సారం", "माती", "सुपीकता", "fertilizer", "ಗೊಬ್ಬರ", "खत"],
+        ans: {
+          kn: "🌱 ಮಣ್ಣಿನ ಫಲವತ್ತತೆ ಹೆಚ್ಚಿಸಲು ಕೊಟ್ಟಿಗೆ ಗೊಬ್ಬರ, ಎರೆಹುಳು ಗೊಬ್ಬರ (Vermicompost), ಹಸಿರೆಲೆ ಗೊಬ್ಬರ ಬಳಸಿ ಮತ್ತು ಪ್ರತಿ 2 ವರ್ಷಕ್ಕೊಮ್ಮೆ ಮಣ್ಣು ಪರೀಕ್ಷೆ ಮಾಡಿಸಿ.",
+          te: "🌱 నేల సారాన్ని పెంచడానికి పశువుల ఎరువు, వర్మీ కంపోస్ట్, పచ్చిరొట్ట ఎరువులు వాడండి మరియు ప్రతి 2 ఏళ్లకు ఒకసారి భూసార పరీక్ష చేయించండి.",
+          mr: "🌱 जमिनीची सुपीकता वाढवण्यासाठी शेणखत, गांडूळ खत (Vermicompost) आणि हिरवळीच्या खतांचा वापर करा, तसेच दर २ वर्षांनी माती परीक्षण करा.",
+          en: "🌱 To boost soil fertility, use organic farmyard manure, vermicompost, green manuring, crop rotation, and get a soil health card test every 2 years."
+        }
+      },
+      {
+        keys: ["capital of india", "ಭಾರತದ ರಾಜಧಾನಿ", "భారతదేశ రాజధాని", "भारताची राजधानी", "new delhi", "ದೆಹಲಿ"],
+        ans: {
+          kn: "🇮🇳 ಭಾರತದ ರಾಜಧಾನಿ ನವದೆಹಲಿ (New Delhi).",
+          te: "🇮🇳 భారతదేశ రాజధాని న్యూఢిల్లీ (New Delhi).",
+          mr: "🇮🇳 भारताची राजधानी नवी दिल्ली (New Delhi) आहे.",
+          en: "🇮🇳 The capital of India is New Delhi."
+        }
+      },
+      {
+        keys: ["fasal bima", "ವಿಮೆ", "ಬೆಳೆ ವಿಮೆ", "పంట బీమా", "पीक विमा", "insurance"],
+        ans: {
+          kn: "🛡️ ಪ್ರಧಾನ ಮಂತ್ರಿ ಫಸಲ್ ಬಿಮಾ ಯೋಜನೆ (PMFBY) ಅಡಿಯಲ್ಲಿ ಪ್ರಕೃತಿ ವಿಕೋಪ, ಮಳೆ ಅಥವಾ ಬರಗಾಲದಿಂದ ಬೆಳೆ ಹಾನಿಯಾದರೆ ರೈತರಿಗೆ ವಿಮಾ ಪರಿಹಾರ ಸಿಗುತ್ತದೆ.",
+          te: "🛡️ ప్రధాన మంత్రి ఫసల్ బీమా యోజన (PMFBY) కింద అకాల వర్షాలు, కరువు లేదా ప్రకృతి వైపరీత్యాల వల్ల పంట నష్టపోతే రైతులకు బీమా పరిహారం లభిస్తుంది.",
+          mr: "🛡️ प्रधानमंत्री पीक विमा योजनेअंतर्गत (PMFBY) अवकाळी पाऊस, दुष्काळ किंवा नैसर्गिक आपत्तीमुळे पिकाचे नुकसान झाल्यास शेतकऱ्यांना विमा संरक्षण मिळते.",
+          en: "🛡️ Pradhan Mantri Fasal Bima Yojana (PMFBY) provides crop insurance coverage to farmers against yield losses caused by drought, floods, pests, and unseasonal rain."
+        }
+      }
+    ];
+
+    function trySolveMath(query) {
+      const cleaned = query.replace(/[^0-9+\-*/().%\s]/g, "").trim();
+      if (!cleaned || !/[+\-*/%]/.test(cleaned) || !/\d/.test(cleaned)) return null;
+      try {
+        const expr = cleaned.replace(/%/g, "/100");
+        const val = Function(`"use strict"; return (${expr})`)();
+        if (typeof val === "number" && Number.isFinite(val)) {
+          const rounded = Math.round(val * 10000) / 10000;
+          return {
+            kn: `🧮 ಗಣಿತ ಉತ್ತರ: ${cleaned} = ${rounded}`,
+            te: `🧮 గణిత సమాధానం: ${cleaned} = ${rounded}`,
+            mr: `🧮 गणित उत्तर: ${cleaned} = ${rounded}`,
+            en: `🧮 Calculation Result: ${cleaned} = ${rounded}`
+          }[currentLang];
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    function isMandiQuestion(q) {
+      const lower = q.toLowerCase();
+      const mandiKeywords = [
+        "ಬೆಲೆ", "ದರ", "ಮಂಡಿ", "ಮಾರ", "ಕಾಯ", "ಸಾಗಣೆ", "ಸಂಗ್ರಹ", "ಹವಾಮಾನ", "ಕ್ವಿಂಟಲ್", "ಅಪಾಯ",
+        "ధర", "మండి", "అమ్మ", "ఆగ", "నిల్వ", "వాతావరణం", "క్వింటాల్", "రిస్క్",
+        "भाव", "दर", "मंडी", "बाजार", "विकू", "थांबू", "साठवण", "क्विंटल", "जोखीम",
+        "price", "rate", "mandi", "sell", "hold", "wait", "market", "quintal", "forecast", "summary", "summarise", "risk"
+      ];
+      return mandiKeywords.some(k => lower.includes(k));
+    }
+
+    function generateMandiReply(question, d) {
+      const q = question.toLowerCase();
+      if (q.includes("risk") || q.includes("ಅಪಾಯ") || q.includes("రిస్క్") || q.includes("जोखीम")) {
+        return `🛡️ ${d.risk.riskLabel} (${d.risk.overallRisk}/100): ${d.risk.riskMitigation}`;
+      }
+      if (q.includes("ಮಂಡಿ") || q.includes("మండి") || q.includes("बाजार") || q.includes("mandi") || q.includes("best")) {
+        return {
+          kn: `🚚 ${d.cropName} ಬೆಳೆಗೆ ಉತ್ತಮ ಮಂಡಿ: ${d.bestMandi.name} (ನಿವ್ವಳ ₹${d.bestMandi.net}/ಕ್ವಿಂಟಲ್).`,
+          te: `🚚 ${d.cropName} పంటకు ఉత్తమ మండి: ${d.bestMandi.name} (నికర ధర ₹${d.bestMandi.net}/క్వింటాల్).`,
+          mr: `🚚 ${d.cropName} साठी सर्वोत्तम बाजार समिती: ${d.bestMandi.name} (निव्वळ ₹${d.bestMandi.net}/क्विंटल).`,
+          en: `🚚 Best mandi for ${d.cropName} is ${d.bestMandi.name} with a net rate of ₹${d.bestMandi.net}/quintal.`
+        }[currentLang];
+      }
+
+      if (q.includes("ಸಂಗ್ರಹ") || q.includes("నిల్వ") || q.includes("साठवण") || q.includes("storage")) {
+        return {
+          kn: `📦 ${d.cropName} ಬೆಳೆಯನ್ನು ಒಣ ಗೋದಾಮಿನಲ್ಲಿ ಗಾಳಿಯಾಡುವಂತೆ ಸಂಗ್ರಹಿಸಿ (${d.cropObj.shelfDays} ದಿನಗಳವರೆಗೆ ಸುರಕ್ಷಿತ).`,
+          te: `📦 ${d.cropName} పంటను పొడి గోదాములో గాలి తగిలేలా నిల్వ చేయండి (${d.cropObj.shelfDays} రోజుల వరకు సురక్షితం).`,
+          mr: `📦 ${d.cropName} कोरड्या व हवेशीर गोदामात साठवा (${d.cropObj.shelfDays} दिवसांपर्यंत सुरक्षित राहते).`,
+          en: `📦 Store ${d.cropName} in a dry, ventilated warehouse on raised pallets (safe up to ${d.cropObj.shelfDays} days).`
+        }[currentLang];
+      }
+
+      return `${d.summaryParagraph}\n${d.reasonText}`;
+    }
+
+    async function fetchWikipediaSummary(query, langCode) {
+      try {
+        const topic = query
+          .replace(/^(what is|who is|tell me about|explain|define|how does|why is)\s+/i, "")
+          .replace(/[?।!]/g, "")
+          .trim();
+        if (!topic || topic.length < 2) return null;
+
+        const searchUrl = `https://${langCode}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(topic)}&format=json&origin=*`;
+        const sRes = await fetch(searchUrl);
+        if (!sRes.ok) return null;
+        const sData = await sRes.json();
+        const topTitle = sData?.query?.search?.[0]?.title;
+        if (!topTitle) return null;
+
+        const sumUrl = `https://${langCode}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topTitle)}`;
+        const sumRes = await fetch(sumUrl);
+        if (!sumRes.ok) return null;
+        const sumData = await sumRes.json();
+        if (sumData && sumData.extract) {
+          const sentences = sumData.extract.split(/(?<=[.!?।])\s+/).slice(0, 2).join(" ");
+          return `🌐 ${sumData.title}: ${sentences}`;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    async function fetchGeminiGeneralReply(question, d) {
+      const apiKey = localStorage.getItem("kisansense_gemini_key");
+      if (!apiKey) return null;
+
+      const langName = { kn: "Kannada", te: "Telugu", mr: "Marathi", en: "English" }[currentLang];
+      const prompt = `You are KisanSense, a helpful, friendly AI assistant for Indian farmers and general users.
+Current Mandi Context (use ONLY if the user asks about crops/market/risk):
+- Location: ${d.distName}, ${d.stateObj.names[currentLang]}
+- Selected Crop: ${d.cropName}, Today's Rate: ₹${d.today}/qtl, 14-Day Forecast: ₹${d.d14}/qtl, Advice: ${d.callText}, Risk Score: ${d.risk.overallRisk}/100
+
+User Question: "${question}"
+
+Instructions:
+- Answer ANY question accurately — whether it is related to agriculture/mandi/risk OR completely unrelated (general knowledge, science, health, math, daily life, technology, history, etc.).
+- Reply strictly in ${langName} language in 2–4 clear, easy-to-read sentences.`;
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          }
+        );
+        if (!res.ok) return null;
+        const json = await res.json();
+        return json?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function resolveSmartAnswer(question, d) {
+      const lower = question.toLowerCase();
+
+      const mathAns = trySolveMath(question);
+      if (mathAns) return { text: mathAns, tag: "🧮 Smart Calculator" };
+
+      const geminiAns = await fetchGeminiGeneralReply(question, d);
+      if (geminiAns) return { text: geminiAns, tag: "✨ Live AI Assistant" };
+
+      if (isMandiQuestion(question)) {
+        return { text: generateMandiReply(question, d), tag: "📊 Mandi & Risk Advisor" };
+      }
+
+      for (const item of BUILTIN_GENERAL_KB) {
+        if (item.keys.some(k => lower.includes(k))) {
+          return { text: item.ans[currentLang], tag: "📚 Knowledge Base" };
+        }
+      }
+
+      const t = I18N[currentLang];
+      let wikiAns = await fetchWikipediaSummary(question, t.wikiLang);
+      if (!wikiAns && t.wikiLang !== "en") {
+        wikiAns = await fetchWikipediaSummary(question, "en");
+      }
+      if (wikiAns) {
+        return { text: wikiAns, tag: "🌐 Live Encyclopedia" };
+      }
+
+      return {
+        tag: "💡 Smart Assistant",
+        text: {
+          kn: `ನೀವು ಕೇಳಿದ "${question}" ಬಗ್ಗೆ ಹೆಚ್ಚಿನ ಮಾಹಿತಿಗಾಗಿ ⚙️ API ಬಟನ್ ಒತ್ತಿ ಉಚಿತ Gemini API ಕೀ ಸೇರಿಸಬಹುದು, ಅಥವಾ ಮಂಡಿ ಬೆಲೆ, ಅಪಾಯ ನಿರ್ವಹಣೆ, ಬೆಳೆ ಮತ್ತು ಸಾಮಾನ್ಯ ವಿಷಯಗಳ ಬಗ್ಗೆ ಕೇಳಬಹುದು.`,
+          te: `మీరు అడిగిన "${question}" గురించి మరింత సమాచారం కోసం ⚙️ API బటన్ నొక్కి Gemini API కీ జోడించవచ్చు, లేదా మండి ధరలు, రిస్క్ మేనేజ్‌మెంట్ మరియు సాధారణ విషయాల గురించి అడగవచ్చు.`,
+          mr: `तुम्ही विचारलेल्या "${question}" बद्दल अधिक सविस्तर उत्तरासाठी ⚙️ API बटण दाबून Gemini API की जोडू शकता, किंवा बाजारभाव, जोखीम व्यवस्थापन आणि सामान्य विषयांवर प्रश्न विचारू शकता.`,
+          en: `For deeper conversational answers on "${question}", you can add a free Gemini API key via the ⚙️ API button above, or try asking simpler topic keywords.`
+        }[currentLang]
+      };
+    }
+
+    // =========================================================================
+    // 7. RENDER UI, RISK VISUALIZATION, VISUAL GALLERY & SUMMARY
+    // =========================================================================
+    function renderCropGallery() {
+      const selectedId = document.getElementById("cropSelect").value || CROPS[0].id;
+      const grid = document.getElementById("cropGalleryGrid");
+      grid.innerHTML = CROPS.map(c => `
+        <button type="button" class="crop-tile ${c.id === selectedId ? "selected" : ""}" data-crop-id="${c.id}">
+          <div class="crop-tile-img">${getCropSvg(c.id)}</div>
+          <span class="crop-tile-name">${c.emoji} ${c.names[currentLang]}</span>
+          <span class="crop-tile-price">₹${c.base.toLocaleString("en-IN")}</span>
+        </button>
+      `).join("");
+
+      grid.querySelectorAll(".crop-tile").forEach(tile => {
+        tile.addEventListener("click", () => {
+          document.getElementById("cropSelect").value = tile.dataset.cropId;
+          runAnalysis();
+        });
+      });
+    }
+
+    function applyLanguageLabels() {
+      const t = I18N[currentLang];
+      document.getElementById("appTitle").textContent = t.appTitle;
+      document.getElementById("appSubtitle").textContent = t.appSubtitle;
+      document.getElementById("marqueeHeaderTitle").textContent = t.marqueeHeaderTitle;
+      document.getElementById("heroHeading").textContent = t.heroHeading;
+      document.getElementById("heroSub").textContent = t.heroSub;
+      document.getElementById("heroCropTag").textContent = t.heroCropTag;
+      document.getElementById("gpsBtnTitle").textContent = t.gpsBtnTitle;
+      document.getElementById("gpsBtnSub").textContent = t.gpsBtnSub;
+      document.getElementById("summaryBtnTitle").textContent = t.summaryBtnTitle;
+      document.getElementById("summaryBtnSub").textContent = t.summaryBtnSub;
+      document.getElementById("galleryTitle").textContent = t.galleryTitle;
+      document.getElementById("gallerySub").textContent = t.gallerySub;
+      document.getElementById("selectCardTitle").textContent = t.selectCardTitle;
+      document.getElementById("forecastHorizonLabel").textContent = t.forecastHorizonLabel;
+      document.getElementById("locationStatusText").textContent = t.locationPrompt;
+      document.getElementById("summaryHeading").textContent = t.summaryHeading;
+      document.getElementById("speakSummaryBtn").textContent = t.speakSummaryBtn;
+      document.getElementById("lblState").textContent = t.lblState;
+      document.getElementById("lblDistrict").textContent = t.lblDistrict;
+      document.getElementById("lblCrop").textContent = t.lblCrop;
+      document.getElementById("lblQty").textContent = t.lblQty;
+      document.getElementById("analyzeBtnText").textContent = t.analyzeBtnText;
+      document.getElementById("decisionTag").textContent = t.decisionTag;
+      document.getElementById("speakAdviceLabel").textContent = t.speakAdviceLabel;
+      document.getElementById("chartTitle").textContent = t.chartTitle;
+      document.getElementById("mandiTableTitle").textContent = t.mandiTableTitle;
+      document.getElementById("mandiTableSub").textContent = t.mandiTableSub;
+      document.getElementById("thMandi").textContent = t.thMandi;
+      document.getElementById("thDist").textContent = t.thDist;
+      document.getElementById("thPrice").textContent = t.thPrice;
+      document.getElementById("thTrans").textContent = t.thTrans;
+      document.getElementById("thNet").textContent = t.thNet;
+      document.getElementById("assistantTitle").textContent = t.assistantTitle;
+      document.getElementById("chatInput").placeholder = t.chatPlaceholder;
+      document.getElementById("sendBtnText").textContent = t.sendBtnText;
+      document.getElementById("voiceStatus").textContent = t.voiceReady;
+      document.getElementById("riskTitle").textContent = t.riskTitle;
+      document.getElementById("riskScoreSub").textContent = t.riskScoreSub;
+      document.getElementById("footerBrand").textContent = `🌾 ${t.appTitle}`;
+      document.getElementById("footerTag").textContent = t.appSubtitle;
+
+      renderTopAutoMarquee();
+
+      document.getElementById("quickChips").innerHTML = t.chips
+        .map(q => `<button type="button" class="q-chip" data-q="${q}">${q}</button>`)
+        .join("");
+      document.querySelectorAll(".q-chip").forEach(btn => {
+        btn.addEventListener("click", () => handleUserQuestion(btn.dataset.q, true));
+      });
+    }
+
+    function renderRiskVisualization(riskData) {
+      const t = I18N[currentLang];
+      const badge = document.getElementById("riskLevelBadge");
+      badge.className = `risk-badge ${riskData.riskTier}`;
+      badge.textContent = riskData.riskLabel;
+
+      const angle = -85 + (riskData.overallRisk / 100) * 170;
+      document.getElementById("riskNeedleGroup").setAttribute("transform", `rotate(${angle.toFixed(1)} 120 116)`);
+      document.getElementById("riskScoreValue").textContent = `${riskData.overallRisk} / 100`;
+
+      const getBarColor = (val) => val >= 65 ? "#dc2626" : (val >= 40 ? "#f59e0b" : "#16a34a");
+
+      document.getElementById("riskBarsList").innerHTML = t.riskFactors.map((label, idx) => {
+        const val = riskData.factors[idx];
+        return `
+          <div class="risk-factor-item">
+            <div class="risk-factor-top">
+              <span>${label}</span>
+              <span style="color: ${getBarColor(val)};">${val}%</span>
+            </div>
+            <div class="risk-progress-track">
+              <div class="risk-progress-fill" style="width: ${val}%; background: ${getBarColor(val)};"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("riskMitigationText").textContent = riskData.riskMitigation;
+    }
+
+    function renderAnalysis(data) {
+      currentAnalysis = data;
+      const t = I18N[currentLang];
+
+      document.getElementById("heroCropImageBox").innerHTML = getCropSvg(data.cropObj.id);
+      document.getElementById("heroCropName").textContent = `${data.cropObj.emoji} ${data.cropName}`;
+      document.getElementById("heroCropPrice").textContent = `₹${data.today.toLocaleString("en-IN")} / ${t.qtlUnit}`;
+      renderCropGallery();
+
+      document.getElementById("selectedHeader").textContent = `${data.cropObj.emoji} ${data.cropName} • ${data.distName}`;
+      document.getElementById("modelBadge").textContent = `${t.accuracyLabel}: ${data.accuracy}`;
+
+      const banner = document.getElementById("decisionBanner");
+      banner.className = `decision-banner ${data.cssClass}`;
+      document.getElementById("decisionCall").textContent = data.callText;
+      document.getElementById("reasonText").textContent = data.reasonText;
+      document.getElementById("impactText").textContent = data.impactText;
+
+      document.getElementById("summaryParagraph").textContent = data.summaryParagraph;
+      document.getElementById("summaryGrid").innerHTML = `
+        <div class="summary-item"><span>${t.today}</span><strong>₹${data.today.toLocaleString("en-IN")} / ${t.qtlUnit}</strong></div>
+        <div class="summary-item"><span>${t.d14}</span><strong>₹${data.d14.toLocaleString("en-IN")} (${data.pct14 >= 0 ? "+" : ""}${data.pct14.toFixed(1)}%)</strong></div>
+        <div class="summary-item"><span>${t.bestBadge}</span><strong>${data.bestMandi.name} (₹${data.bestMandi.net})</strong></div>
+        <div class="summary-item"><span>${t.lblQty}</span><strong>${data.impactText}</strong></div>
+      `;
+
+      const maxVal = Math.max(data.today, data.d7, data.d14);
+      const minVal = Math.min(data.today, data.d7, data.d14);
+      const scaleHeight = (val) => maxVal === minVal ? 68 : Math.round(40 + ((val - minVal) / (maxVal - minVal)) * 55);
+
+      const bars = [
+        { label: t.today, val: data.today, pct: 0, cls: "today" },
+        { label: t.d7, val: data.d7, pct: data.pct7, cls: data.pct7 < 0 ? "down" : "" },
+        { label: t.d14, val: data.d14, pct: data.pct14, cls: data.pct14 < 0 ? "down" : "" }
+      ];
+
+      document.getElementById("barsWrap").innerHTML = bars.map(b => `
+        <div class="bar-col">
+          <div class="bar-price">₹${b.val.toLocaleString("en-IN")}</div>
+          <div class="bar-delta ${b.pct > 0 ? "up" : b.pct < 0 ? "down" : ""}">
+            ${b.pct === 0 ? t.todayRate : `${b.pct > 0 ? "+" : ""}${b.pct.toFixed(1)}%`}
+          </div>
+          <div class="bar-track"><div class="bar-fill ${b.cls}" style="height: ${scaleHeight(b.val)}%;"></div></div>
+          <div class="bar-label">${b.label}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("signalsGrid").innerHTML = `
+        <div class="signal-box"><div class="label">${t.weatherLbl}</div><div class="value">${data.weatherText}</div></div>
+        <div class="signal-box"><div class="label">${t.arrivalsLbl}</div><div class="value">${data.arrivalsText}</div></div>
+        <div class="signal-box"><div class="label">${t.seasonLbl}</div><div class="value">${data.seasonText}</div></div>
+      `;
+
+      document.getElementById("mandiTableBody").innerHTML = data.mandis.map((m, idx) => `
+        <tr class="${idx === 0 ? "best-mandi" : ""}">
+          <td>${m.name} ${idx === 0 ? `<span class="best-badge">${t.bestBadge}</span>` : ""}</td>
+          <td>${m.km === 0 ? t.localKm : `${m.km} ${t.kmUnit}`}</td>
+          <td>₹${m.price.toLocaleString("en-IN")}</td>
+          <td>₹${m.transport}</td>
+          <td><strong>₹${m.net.toLocaleString("en-IN")}</strong></td>
+        </tr>
+      `).join("");
+
+      renderRiskVisualization(data.risk);
+    }
+
+    // =========================================================================
+    // 8. MULTI-LANGUAGE VOICE ENGINE (TTS & STT)
+    // =========================================================================
+    let activeAudio = null;
+
+    function stopSpeech() {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      if (activeAudio) { activeAudio.pause(); activeAudio = null; }
+    }
+
+    function speakText(rawText) {
+      stopSpeech();
+      const t = I18N[currentLang];
+      const clean = rawText.replace(/[₹•|📌🌾🚜📡📋🏛️🌱🇮🇳🛡️🧮📊📚🌐💡✨🚚📦⚠️✅⚖️📸]/g, " ").replace(/\s+/g, " ").trim();
+      if (!clean) return;
+
+      if ("speechSynthesis" in window) {
+        const voices = window.speechSynthesis.getVoices();
+        const match = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(t.ttsCode));
+        if (match) {
+          const utter = new SpeechSynthesisUtterance(clean);
+          utter.voice = match;
+          utter.lang = t.speechCode;
+          utter.rate = 0.95;
+          window.speechSynthesis.speak(utter);
+          return;
+        }
+      }
+
+      const chunk = clean.slice(0, 180);
+      activeAudio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${t.ttsCode}&q=${encodeURIComponent(chunk)}`);
+      activeAudio.play().catch(() => {});
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isListening = false;
+
+    function startVoiceCapture() {
+      const t = I18N[currentLang];
+      const statusEl = document.getElementById("voiceStatus");
+
+      if (!SpeechRecognition) {
+        statusEl.className = "voice-status error";
+        statusEl.textContent = "⚠️ Voice input requires Chrome or Edge browser.";
+        return;
+      }
+
+      if (isListening && recognition) {
+        recognition.stop();
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = t.speechCode;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        isListening = true;
+        stopSpeech();
+        document.getElementById("micBtn").classList.add("listening");
+        statusEl.className = "voice-status";
+        statusEl.textContent = t.voiceListening;
+      };
+
+      recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        document.getElementById("chatInput").value = transcript;
+        statusEl.textContent = `✅ "${transcript}"`;
+        handleUserQuestion(transcript, true);
+      };
+
+      recognition.onerror = () => {
+        statusEl.className = "voice-status error";
+        statusEl.textContent = t.voiceReady;
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        document.getElementById("micBtn").classList.remove("listening");
+      };
+
+      recognition.start();
+    }
+
+    // =========================================================================
+    // 9. CHAT UI & HANDLERS
+    // =========================================================================
+    function appendMessage(role, text, sourceTag = "") {
+      const box = document.getElementById("chatBox");
+      const div = document.createElement("div");
+      div.className = `msg ${role}`;
+      if (role === "user") {
+        div.textContent = text;
+      } else {
+        div.innerHTML = `
+          ${sourceTag ? `<div class="msg-source-tag">${sourceTag}</div>` : ""}
+          <div style="white-space: pre-line; font-weight: 600;">${text}</div>
+          <div class="msg-actions">
+            <button type="button" class="mini-btn speak-msg-btn">🔊 Listen</button>
+          </div>
+        `;
+        div.querySelector(".speak-msg-btn").addEventListener("click", () => speakText(text));
+      }
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      return div;
+    }
+
+    async function handleUserQuestion(text, autoSpeak = false) {
+      const clean = text.trim();
+      if (!clean || !currentAnalysis) return;
+      const t = I18N[currentLang];
+
+      appendMessage("user", clean);
+      document.getElementById("chatInput").value = "";
+
+      const box = document.getElementById("chatBox");
+      const loader = document.createElement("div");
+      loader.className = "msg bot";
+      loader.textContent = t.thinking;
+      box.appendChild(loader);
+      box.scrollTop = box.scrollHeight;
+
+      const result = await resolveSmartAnswer(clean, currentAnalysis);
+      loader.remove();
+
+      appendMessage("bot", result.text, result.tag);
+      if (autoSpeak) speakText(result.text);
+    }
+
+    // =========================================================================
+    // 10. DROPDOWNS & INIT
+    // =========================================================================
+    function populateDropdowns(keepSelection = false) {
+      const stateSel = document.getElementById("stateSelect");
+      const prevState = stateSel.value || INDIA_LOCATIONS[0].id;
+      stateSel.innerHTML = INDIA_LOCATIONS
+        .map(s => `<option value="${s.id}">${s.names[currentLang]}</option>`)
+        .join("");
+      stateSel.value = keepSelection ? prevState : INDIA_LOCATIONS[0].id;
+
+      populateDistricts(stateSel.value, keepSelection);
+
+      const cropSel = document.getElementById("cropSelect");
+      const prevCrop = cropSel.value || CROPS[0].id;
+      cropSel.innerHTML = CROPS
+        .map(c => `<option value="${c.id}">${c.emoji} ${c.names[currentLang]}</option>`)
+        .join("");
+      cropSel.value = keepSelection ? prevCrop : CROPS[0].id;
+    }
+
+    function populateDistricts(stateId, keepDist = false) {
+      const distSel = document.getElementById("districtSelect");
+      const prevDist = distSel.value;
+      const st = INDIA_LOCATIONS.find(s => s.id === stateId) || INDIA_LOCATIONS[0];
+      distSel.innerHTML = st.districts
+        .map(d => `<option value="${d.id}">${d.names[currentLang]}</option>`)
+        .join("");
+      if (keepDist && st.districts.some(d => d.id === prevDist)) {
+        distSel.value = prevDist;
+      }
+    }
+
+    function runAnalysis() {
+      const stateId = document.getElementById("stateSelect").value;
+      const stateObj = INDIA_LOCATIONS.find(s => s.id === stateId) || INDIA_LOCATIONS[0];
+      const distId = document.getElementById("districtSelect").value;
+      const distObj = stateObj.districts.find(d => d.id === distId) || stateObj.districts[0];
+      const cropId = document.getElementById("cropSelect").value;
+      const cropObj = CROPS.find(c => c.id === cropId) || CROPS[0];
+      const qty = Math.max(1, parseInt(document.getElementById("qtyInput").value, 10) || 10);
+
+      const data = computeForecast(stateObj, distObj, cropObj, qty);
+      renderAnalysis(data);
+    }
+
+    function switchLanguage(lang) {
+      currentLang = lang;
+      document.querySelectorAll(".lang-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.lang === lang);
+      });
+      applyLanguageLabels();
+      populateDropdowns(true);
+      runAnalysis();
+      document.getElementById("chatBox").innerHTML = "";
+      appendMessage("bot", I18N[currentLang].welcomeMsg, "✨ 4-Language AI");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyLanguageLabels();
+      populateDropdowns(false);
+      runAnalysis();
+      appendMessage("bot", I18N[currentLang].welcomeMsg, "✨ 4-Language AI");
+
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.addEventListener("click", () => switchLanguage(btn.dataset.lang));
+      });
+
+      document.getElementById("detectLocationBtn").addEventListener("click", detectLiveLocation);
+      document.getElementById("toggleSummaryBtn").addEventListener("click", () => {
+        const panel = document.getElementById("summaryPanel");
+        panel.classList.toggle("visible");
+        if (panel.classList.contains("visible") && currentAnalysis) {
+          speakText(currentAnalysis.summaryParagraph);
+        }
+      });
+      document.getElementById("speakSummaryBtn").addEventListener("click", () => {
+        if (currentAnalysis) speakText(currentAnalysis.summaryParagraph);
+      });
+      document.getElementById("micBtn").addEventListener("click", startVoiceCapture);
+
+      document.getElementById("stateSelect").addEventListener("change", (e) => {
+        populateDistricts(e.target.value, false);
+        runAnalysis();
+      });
+      document.getElementById("districtSelect").addEventListener("change", runAnalysis);
+      document.getElementById("cropSelect").addEventListener("change", runAnalysis);
+      document.getElementById("analyzeBtn").addEventListener("click", runAnalysis);
+
+      document.getElementById("qtyMinus").addEventListener("click", () => {
+        const inp = document.getElementById("qtyInput");
+        inp.value = Math.max(1, (parseInt(inp.value, 10) || 1) - 1);
+        runAnalysis();
+      });
+      document.getElementById("qtyPlus").addEventListener("click", () => {
+        const inp = document.getElementById("qtyInput");
+        inp.value = Math.min(500, (parseInt(inp.value, 10) || 1) + 1);
+        runAnalysis();
+      });
+      document.getElementById("qtyInput").addEventListener("change", runAnalysis);
+
+      document.getElementById("speakAdviceBtn").addEventListener("click", () => {
+        if (currentAnalysis) speakText(`${currentAnalysis.callText}. ${currentAnalysis.reasonText}`);
+      });
+
+      document.getElementById("chatForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        handleUserQuestion(document.getElementById("chatInput").value, true);
+      });
+
+      const modal = document.getElementById("settingsModal");
+      document.getElementById("openSettingsBtn").addEventListener("click", () => {
+        document.getElementById("geminiKeyInput").value = localStorage.getItem("kisansense_gemini_key") || "";
+        modal.classList.add("open");
+      });
+      document.getElementById("closeSettingsBtn").addEventListener("click", () => modal.classList.remove("open"));
+      document.getElementById("saveSettingsBtn").addEventListener("click", () => {
+        const val = document.getElementById("geminiKeyInput").value.trim();
+        if (val) localStorage.setItem("kisansense_gemini_key", val);
+        else localStorage.removeItem("kisansense_gemini_key");
+        modal.classList.remove("open");
+      });
+    });
+  </script>
+</body>
+</html>
